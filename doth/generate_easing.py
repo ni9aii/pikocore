@@ -45,19 +45,24 @@ for i, ease in enumerate(ee):
     print("}")
 
 
-import matplotlib.pyplot as plt
-import numpy as np
+try:
+    import matplotlib.pyplot as plt
+    import numpy as np
+except ImportError:
+    plt = None
+    np = None
 
-for i, ease in enumerate(ee):
-    xs = np.multiply(ease["x"], 8 / 4095)
-    ys = ease["y"]
-    name = ease["name"]
-    plt.plot(xs, ys[1:], alpha=0.4)
-    plt.fill_between(xs, ys[1:], alpha=0.2, label=name)
-    # plt.gca().add_patch(patch1)
-plt.legend(
-    loc="upper center", bbox_to_anchor=(0.25, 1.1), ncol=1, fancybox=True, shadow=True
-)
-plt.xlabel("knob")
-plt.ylabel("result")
-plt.savefig("easings.png")
+if plt is not None and np is not None:
+    for i, ease in enumerate(ee):
+        xs = np.multiply(ease["x"], 8 / 4095)
+        ys = ease["y"]
+        name = ease["name"]
+        plt.plot(xs, ys[1:], alpha=0.4)
+        plt.fill_between(xs, ys[1:], alpha=0.2, label=name)
+        # plt.gca().add_patch(patch1)
+    plt.legend(
+        loc="upper center", bbox_to_anchor=(0.25, 1.1), ncol=1, fancybox=True, shadow=True
+    )
+    plt.xlabel("knob")
+    plt.ylabel("result")
+    plt.savefig("easings.png")

@@ -77,11 +77,17 @@ extern "C" {
 #endif
 
 //------------- CLASS -------------//
-#define CFG_TUD_CDC             0
+#define CFG_TUD_CDC             1
 #define CFG_TUD_MSC             0
 #define CFG_TUD_HID             0 
 #define CFG_TUD_MIDI            1 
 #define CFG_TUD_VENDOR          0
+
+// CDC FIFO size of TX and RX. Metadata responses can exceed one 64-byte USB
+// packet, so keep the TX FIFO large enough to queue a command response before
+// flushing.
+#define CFG_TUD_CDC_RX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 256)
+#define CFG_TUD_CDC_TX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 1024 : 1024)
 
 // MIDI FIFO size of TX and RX
 #define CFG_TUD_MIDI_RX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)

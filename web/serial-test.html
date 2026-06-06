@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pikocore serial test</title>
+    <style>
+      body {
+        margin: 24px;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #202020;
+        background: #f7f6f0;
+      }
+      button {
+        height: 34px;
+        margin-right: 8px;
+        padding: 0 12px;
+      }
+      pre {
+        min-height: 320px;
+        padding: 12px;
+        overflow: auto;
+        color: #f7f6f0;
+        background: #202020;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>pikocore serial test</h1>
+    <button id="connect">Connect</button>
+    <button id="sync" disabled>Sync</button>
+    <button id="info" disabled>Info</button>
+    <pre id="log"></pre>
+    <script type="module">
+      const logEl = document.querySelector("#log");
+      const connectButton = document.querySelector("#connect");
+      const syncButton = document.querySelector("#sync");
+      const infoButton = document.querySelector("#info");
+      const encoder = new TextEncoder();
+      const decoder = new TextDecoder();
+      let port = null;
+      let reader = null;
+      let writer = null;
+      let buffer = new Uint8Array(0);
+      let waiters = [];
+
+      function log(message) {
+        logEl.textContent += `${new Date().toLocaleTimeString()} ${message}\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function notify() {
+        const current = waiters;
+        waiters = [];
+        current.forEach((waiter) => waiter());
+      }
+
+      function append(chunk) {
+        const next = new Uint8Array(buffer.length + chunk.length);
+        next.set(buffer);
+        next.set(chunk, buffer.length);
+        buffer = next;
+        notify();
+      }
+
+      async function waitForData(timeoutMs) {
+        if (buffer.length > 0) return;
+        await new Promise((resolve, reject) => {
+          const waiter = () => {
+            clearTimeout(timer);
+            resolve();
+          };
+          const timer = setTimeout(() => {
+            waiters = waiters.filter((entry) => entry !== waiter);
+            reject(new Error("Timed out waiting for serial data"));
+          }, timeoutMs);
+          waiters.push(waiter);
+        });
+      }
+
+      async function waitForBytes(length, timeoutMs) {
+        const deadline = Date.now() + timeoutMs;
+        while (buffer.length < length) {
+          const remaining = deadline - Date.now();
+          if (remaining <= 0) throw new Error("Timed out waiting for serial bytes");
+          await waitForData(remaining);
+        }
+        const result = buffer.slice(0, length);
+        buffer = buffer.slice(length);
+        return result;
+      }
+
+      function findSequence(haystack, needle) {
+        for (let i = 0; i <= haystack.length - needle.length; i++) {
+          let match = true;
+          for (let j = 0; j < needle.length; j++) {
+            if (haystack[i + j] !== needle[j]) {
+              match = false;
+              break;
+            }
+          }
+          if (match) return i;
+        }
+        return -1;
+      }
+
+      async function write(value) {
+        log(`tx ${JSON.stringify(value)}`);
+        await writer.write(encoder.encode(value));
+      }
+
+      async function syncDevice() {
+        const marker = encoder.encode("SYNC\n");
+        for (let attempt = 0; attempt < 4; attempt++) {
+          buffer = new Uint8Array(0);
+          await write("X");
+          const deadline = Date.now() + 2000;
+          while (Date.now() < deadline) {
+            const index = findSequence(buffer, marker);
+            if (index >= 0) {
+              buffer = buffer.slice(index + marker.length);
+              log("got SYNC");
+              return;
+            }
+            try {
+              await waitForData(Math.max(1, deadline - Date.now()));
+            } catch (_) {
+              break;
+            }
+          }
+        }
+        throw new Error("No SYNC response");
+      }
+
+      async function readInfo() {
+        await syncDevice();
+        await write("I");
+        const lenBytes = await waitForBytes(4, 20000);
+        const len = new DataView(lenBytes.buffer, lenBytes.byteOffset, 4).getUint32(0, true);
+        const payload = await waitForBytes(len, 20000);
+        log(decoder.decode(payload).trim());
+      }
+
+      connectButton.addEventListener("click", async () => {
+        try {
+          if (!navigator.serial) throw new Error("Web Serial is not available");
+          port = await navigator.serial.requestPort();
+          const info = port.getInfo();
+          log(`selected VID=${info.usbVendorId ?? "--"} PID=${info.usbProductId ?? "--"}`);
+          await port.open({ baudRate: 115200, bufferSize: 4096 });
+          await port.setSignals?.({ dataTerminalReady: false, requestToSend: false });
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          await port.setSignals?.({ dataTerminalReady: true, requestToSend: true });
+          await new Promise((resolve) => setTimeout(resolve, 750));
+          writer = port.writable.getWriter();
+          reader = port.readable.getReader();
+          syncButton.disabled = false;
+          infoButton.disabled = false;
+          log("port opened");
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            if (!value) continue;
+            log(`rx ${value.length} bytes`);
+            append(value);
+          }
+        } catch (error) {
+          log(error instanceof Error ? error.message : String(error));
+        }
+      });
+
+      syncButton.addEventListener("click", () => syncDevice().catch((error) => log(error.message)));
+      infoButton.addEventListener("click", () => readInfo().catch((error) => log(error.message)));
+    </script>
+  </body>
+</html>

@@ -2,6 +2,19 @@
 pico-sdk/
 *.d
 
+# CMake/build output. Keep the released UF2 artifact trackable.
+build/*
+!build/
+!build/pikocore.uf2
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+
+# Web dependencies and local caches. Keep web/dist trackable for the static site.
+web/node_modules/
+web/.vite/
+
 # Compiled Object files
 *.slo
 *.lo
