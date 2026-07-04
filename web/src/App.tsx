@@ -5,6 +5,7 @@ import {
   Download,
   Eraser,
   FolderOpen,
+  HardDrive,
   Pause,
   Play,
   Plus,
@@ -15,9 +16,11 @@ import {
 } from 'lucide-react';
 import { driver, type Driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
+import { Estimation } from 'arrival-time';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { decodeAndEncodeFile, makePreviewBuffer } from './audio';
 import {
+  BANK_MAX_SAMPLES,
   BANK_SAMPLE_RATE,
   BankSample,
   buildBankBlob,
@@ -25,12 +28,35 @@ import {
   parseBankBlob,
   usedAudioBytes,
 } from './bank';
-import { DeviceInfo, PikocoreSerial } from './serial';
+import { DeviceInfo, PikocoreSerial, isCompatibleFirmware } from './serial';
 import ittybittymidiConnection from './assets/ittybittymidi_connection.jpg';
 import pikocoreInstructions from './assets/pikocore_instructions.png';
 
 const serial = new PikocoreSerial();
-const firmwareDownloadUrl = `${import.meta.env.BASE_URL}pikocore.uf2`;
+const requiredFirmwareLabel = '2.2 or newer';
+const firmwareOptions = [
+  {
+    file: 'pikocore-16mb.uf2',
+    name: 'pikocore-16mb.uf2',
+    label: '16 MB pikocore',
+    title: 'Download the default 16 MB pikocore UF2 firmware',
+    default: true,
+  },
+  {
+    file: 'pikocore-4mb.uf2',
+    name: 'pikocore-4mb.uf2',
+    label: '4 MB',
+    title: 'Download the 4 MB UF2 firmware',
+    default: false,
+  },
+  {
+    file: 'pikocore-2mb.uf2',
+    name: 'pikocore-2mb.uf2',
+    label: '2 MB',
+    title: 'Download the 2 MB UF2 firmware',
+    default: false,
+  },
+] as const;
 
 type StatusKind = 'idle' | 'good' | 'warn' | 'bad';
 type Theme = 'light' | 'dark';
@@ -40,16 +66,27 @@ interface Status {
   kind: StatusKind;
 }
 
+interface TransferDetail {
+  transferredBytes: number;
+  totalBytes: number | null;
+  etaMs: number | null;
+}
+
 export function App() {
   const [samples, setSamples] = useState<BankSample[]>([]);
   const [device, setDevice] = useState<DeviceInfo | null>(null);
   const [connected, setConnected] = useState(false);
+  const [incompatibleDevice, setIncompatibleDevice] = useState<DeviceInfo | null>(null);
   const [bankDirty, setBankDirty] = useState(false);
   const [status, setStatus] = useState<Status>({ text: 'Disconnected', kind: 'idle' });
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [uploadDetail, setUploadDetail] = useState<TransferDetail | null>(null);
+  const [downloadDetail, setDownloadDetail] = useState<TransferDetail | null>(null);
+  const [firmwareDownloadDetail, setFirmwareDownloadDetail] = useState<TransferDetail | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [playheadFrame, setPlayheadFrame] = useState(0);
+  const [firmwareFile, setFirmwareFile] = useState<(typeof firmwareOptions)[number]['file']>(firmwareOptions[0].file);
   const [debugLog, setDebugLog] = useState<string[]>([]);
   const [debugOpen, setDebugOpen] = useState(false);
   const [ittybittymidiInfoOpen, setIttybittymidiInfoOpen] = useState(false);
@@ -111,9 +148,24 @@ export function App() {
   const overCapacity = capacity != null && used > capacity;
   const usageRatio = capacity != null && capacity > 0 ? Math.min(1, used / capacity) : 0;
   const showStatusSpinner = busy && status.kind === 'idle';
-  const bankEditingDisabled = !connected || busy;
-  const uploadNeedsSync = connected && bankDirty;
-  const uploadDisabled = !connected || busy || overCapacity || (!uploadNeedsSync && samples.length === 0);
+  const bankEditingDisabled = !connected || busy || incompatibleDevice != null;
+  const uploadNeedsSync = connected && incompatibleDevice == null && bankDirty;
+  const uploadDisabled = !connected || incompatibleDevice != null || busy || overCapacity || (!uploadNeedsSync && samples.length === 0);
+  const selectedFirmware = firmwareOptions.find((option) => option.file === firmwareFile) ?? firmwareOptions[0];
+  const firmwareDownloadUrl = `${import.meta.env.BASE_URL}${selectedFirmware.file}`;
+  const uploadTransferText =
+    busy && status.text === 'Uploading' && uploadDetail
+      ? formatTransferDetail(uploadDetail)
+      : null;
+  const downloadTransferText =
+    busy && status.text === 'Downloading' && downloadDetail
+      ? formatTransferDetail(downloadDetail)
+      : null;
+  const firmwareDownloadTransferText =
+    busy && status.text === 'Downloading UF2' && firmwareDownloadDetail
+      ? formatTransferDetail(firmwareDownloadDetail)
+      : null;
+  const transferText = uploadTransferText ?? downloadTransferText ?? firmwareDownloadTransferText;
 
   async function connect() {
     if (connected) {
@@ -121,6 +173,7 @@ export function App() {
       await serial.disconnect();
       setConnected(false);
       setDevice(null);
+      setIncompatibleDevice(null);
       setBankDirty(false);
       setStatus({ text: 'Disconnected', kind: 'idle' });
       return;
@@ -129,14 +182,27 @@ export function App() {
     try {
       setBusy(true);
       clearDebugLog();
+      setIncompatibleDevice(null);
       serial.setLogger(appendDebugLog);
       setStatus({ text: 'Connecting', kind: 'idle' });
       await serial.connect();
       const info = await initialiseWithRetry();
+      if (!isCompatibleFirmware(info)) {
+        stopPreview();
+        setDevice(null);
+        setConnected(false);
+        setIncompatibleDevice(info);
+        setBankDirty(false);
+        setProgress(0);
+        setStatus({ text: 'Firmware update required', kind: 'warn' });
+        await serial.disconnect();
+        serial.setLogger(null);
+        return;
+      }
       setDevice(info);
       setConnected(true);
       setStatus({ text: 'Downloading', kind: 'idle' });
-      const bank = await serial.readBank((ratio) => setProgress(ratio));
+      const bank = await readBankWithProgress();
       if (bank) {
         const parsed = parseBankBlob(bank);
         setSamples(parsed.samples);
@@ -148,6 +214,7 @@ export function App() {
         setStatus({ text: 'Connected: device bank is empty', kind: 'good' });
       }
       setProgress(0);
+      setDownloadDetail(null);
     } catch (error) {
       setStatus({ text: errorMessage(error), kind: 'bad' });
       try {
@@ -161,19 +228,153 @@ export function App() {
     }
   }
 
+  async function enterBootloaderMode() {
+    const wasConnected = connected;
+    try {
+      setBusy(true);
+      stopPreview();
+      serial.setLogger(appendDebugLog);
+      setStatus({ text: 'Entering BOOTSEL mode', kind: 'idle' });
+      if (serial.connected()) {
+        await serial.bootloader();
+      } else {
+        await serial.resetToBootloader();
+      }
+      setConnected(false);
+      setDevice(null);
+      setIncompatibleDevice(null);
+      setBankDirty(false);
+      setProgress(0);
+      setUploadDetail(null);
+      setDownloadDetail(null);
+      setFirmwareDownloadDetail(null);
+      setStatus({ text: `BOOTSEL mode: copy ${selectedFirmware.name} to the new RPI-RP2 drive`, kind: 'good' });
+    } catch (error) {
+      if (wasConnected) {
+        try {
+          await serial.disconnect();
+        } catch (_) {}
+        setConnected(false);
+        setDevice(null);
+        setBankDirty(false);
+      }
+      const message = errorMessage(error);
+      setStatus({
+        text:
+          wasConnected && /Timed out waiting for serial line|Bootloader reset rejected/.test(message)
+            ? 'Connected firmware does not support web BOOTSEL yet; use the BOOTSEL button once to install updated firmware'
+            : message,
+        kind: 'bad',
+      });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function downloadFirmware() {
+    try {
+      setBusy(true);
+      setProgress(0);
+      setUploadDetail(null);
+      setDownloadDetail(null);
+      setFirmwareDownloadDetail({ transferredBytes: 0, totalBytes: null, etaMs: null });
+      setStatus({ text: 'Downloading UF2', kind: 'idle' });
+
+      const response = await fetch(firmwareDownloadUrl);
+      if (!response.ok) throw new Error(`Firmware download failed: ${response.status} ${response.statusText}`);
+
+      const totalBytes = parseContentLength(response.headers.get('content-length'));
+      if (!response.body) {
+        const blob = await response.blob();
+        setProgress(1);
+        setFirmwareDownloadDetail({ transferredBytes: blob.size, totalBytes: blob.size || totalBytes, etaMs: null });
+        saveBlob(blob, selectedFirmware.name);
+        setStatus({ text: `Downloaded ${selectedFirmware.name}`, kind: 'good' });
+        return;
+      }
+
+      const reader = response.body.getReader();
+      const chunks: BlobPart[] = [];
+      const eta = totalBytes != null ? new Estimation({ progress: 0, total: totalBytes }) : null;
+      let receivedBytes = 0;
+      let lastEtaUpdate = 0;
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        if (!value) continue;
+        const chunk = new ArrayBuffer(value.byteLength);
+        new Uint8Array(chunk).set(value);
+        chunks.push(chunk);
+        receivedBytes += value.length;
+        const ratio = totalBytes != null && totalBytes > 0 ? Math.min(1, receivedBytes / totalBytes) : 0;
+        const now = performance.now();
+        const estimate =
+          eta && totalBytes != null && now - lastEtaUpdate >= 500 && ratio < 1 ? eta.update(receivedBytes, totalBytes).estimate : null;
+        if (estimate != null) lastEtaUpdate = now;
+        setProgress(ratio);
+        setFirmwareDownloadDetail({
+          transferredBytes: receivedBytes,
+          totalBytes,
+          etaMs: estimate != null && Number.isFinite(estimate) && estimate > 0 ? estimate : null,
+        });
+      }
+
+      const blob = new Blob(chunks, { type: 'application/octet-stream' });
+      saveBlob(blob, selectedFirmware.name);
+      setProgress(1);
+      setFirmwareDownloadDetail({ transferredBytes: receivedBytes, totalBytes: totalBytes ?? receivedBytes, etaMs: null });
+      setStatus({ text: `Downloaded ${selectedFirmware.name}`, kind: 'good' });
+    } catch (error) {
+      setStatus({ text: errorMessage(error), kind: 'bad' });
+    } finally {
+      setProgress(0);
+      setFirmwareDownloadDetail(null);
+      setDownloadDetail(null);
+      setBusy(false);
+    }
+  }
+
   async function initialiseWithRetry(): Promise<DeviceInfo> {
     let lastError: unknown = null;
     for (let attempt = 0; attempt < 4; attempt++) {
       try {
         setStatus({ text: attempt === 0 ? 'Connecting' : 'Retrying connection', kind: 'idle' });
         await serial.sync();
-        return await serial.stopAndInfo(true);
+        return await serial.info(true);
       } catch (error) {
         lastError = error;
         await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
       }
     }
     throw lastError instanceof Error ? lastError : new Error(String(lastError));
+  }
+
+  async function readBankWithProgress() {
+    setProgress(0);
+    setDownloadDetail(null);
+    let eta: Estimation | null = null;
+    let lastEtaUpdate = 0;
+    return serial.readBank((ratio, transferredBytes, totalBytes) => {
+      setProgress(ratio);
+      if (!eta) {
+        eta = new Estimation({ progress: 0, total: totalBytes });
+        setDownloadDetail({ transferredBytes: 0, totalBytes, etaMs: null });
+      }
+      const now = performance.now();
+      if (now - lastEtaUpdate < 500 && ratio < 1) {
+        setDownloadDetail((current) =>
+          current ? { ...current, transferredBytes, totalBytes } : { transferredBytes, totalBytes, etaMs: null },
+        );
+        return;
+      }
+      lastEtaUpdate = now;
+      const estimate = eta.update(transferredBytes, totalBytes).estimate;
+      setDownloadDetail({
+        transferredBytes,
+        totalBytes,
+        etaMs: Number.isFinite(estimate) && estimate > 0 && ratio < 1 ? estimate : null,
+      });
+    });
   }
 
   function clearDebugLog() {
@@ -226,21 +427,37 @@ export function App() {
 
   async function addFiles(fileList: FileList | File[]) {
     if (!connected) {
-      setStatus({ text: 'Connect to a pikocore before adding audio', kind: 'warn' });
+      setStatus({
+        text: incompatibleDevice ? 'Firmware update required before adding audio' : 'Connect to a pikocore before adding audio',
+        kind: 'warn',
+      });
       return;
     }
     const files = Array.from(fileList).filter((file) => file.type.startsWith('audio/') || /\.(aif|aiff|wav|mp3|flac|ogg)$/i.test(file.name));
     if (files.length === 0) return;
+    const availableSlots = Math.max(0, BANK_MAX_SAMPLES - samples.length);
+    if (availableSlots === 0) {
+      setStatus({ text: `pikocore supports up to ${BANK_MAX_SAMPLES} samples`, kind: 'warn' });
+      return;
+    }
+    const filesToProcess = files.slice(0, availableSlots);
+    const skipped = files.length - filesToProcess.length;
     setBusy(true);
     try {
       const next: BankSample[] = [];
-      for (const file of files) {
+      for (const file of filesToProcess) {
         setStatus({ text: `Processing ${file.name}`, kind: 'idle' });
         next.push(await decodeAndEncodeFile(file));
       }
-      setSamples((current) => [...current, ...next].slice(0, 32));
+      setSamples((current) => [...current, ...next].slice(0, BANK_MAX_SAMPLES));
       setBankDirty(true);
-      setStatus({ text: `Added ${next.length} sample${next.length === 1 ? '' : 's'}`, kind: 'good' });
+      setStatus({
+        text:
+          skipped > 0
+            ? `Added ${next.length} sample${next.length === 1 ? '' : 's'}; ignored ${skipped} over the ${BANK_MAX_SAMPLES}-sample limit`
+            : `Added ${next.length} sample${next.length === 1 ? '' : 's'}`,
+        kind: skipped > 0 ? 'warn' : 'good',
+      });
     } catch (error) {
       setStatus({ text: errorMessage(error), kind: 'bad' });
     } finally {
@@ -249,7 +466,7 @@ export function App() {
   }
 
   async function uploadBank() {
-    if (!connected) {
+    if (!connected || incompatibleDevice) {
       setStatus({ text: 'Connect to a pikocore before uploading', kind: 'warn' });
       return;
     }
@@ -259,26 +476,46 @@ export function App() {
       stopPreview();
       setStatus({ text: 'Uploading', kind: 'idle' });
       const blob = buildBankBlob(samples, device.capacityBytes);
-      await serial.writeBank(blob, (ratio) => setProgress(ratio));
+      const eta = new Estimation({ progress: 0, total: blob.length });
+      let lastEtaUpdate = 0;
+      setProgress(0);
+      setDownloadDetail(null);
+      setUploadDetail({ transferredBytes: 0, totalBytes: blob.length, etaMs: null });
+      await serial.writeBank(blob, (ratio, transferredBytes, totalBytes) => {
+        setProgress(ratio);
+        const now = performance.now();
+        if (now - lastEtaUpdate < 500 && ratio < 1) return;
+        lastEtaUpdate = now;
+        const estimate = eta.update(transferredBytes, totalBytes).estimate;
+        setUploadDetail({
+          transferredBytes,
+          totalBytes,
+          etaMs: Number.isFinite(estimate) && estimate > 0 && ratio < 1 ? estimate : null,
+        });
+      });
       const info = await serial.info();
       setDevice(info);
       setBankDirty(false);
       setProgress(0);
+      setUploadDetail(null);
       setStatus({ text: 'Upload complete', kind: 'good' });
     } catch (error) {
       setStatus({ text: errorMessage(error), kind: 'bad' });
     } finally {
+      setProgress(0);
+      setUploadDetail(null);
+      setDownloadDetail(null);
       setBusy(false);
     }
   }
 
   async function readDevice() {
-    if (!connected) return;
+    if (!connected || incompatibleDevice) return;
     try {
       setBusy(true);
       stopPreview();
       setStatus({ text: 'Downloading', kind: 'idle' });
-      const bank = await serial.readBank((ratio) => setProgress(ratio));
+      const bank = await readBankWithProgress();
       const info = await serial.info();
       setDevice(info);
       if (bank) {
@@ -292,15 +529,18 @@ export function App() {
         setStatus({ text: 'Device bank is empty', kind: 'good' });
       }
       setProgress(0);
+      setDownloadDetail(null);
     } catch (error) {
       setStatus({ text: errorMessage(error), kind: 'bad' });
     } finally {
+      setProgress(0);
+      setDownloadDetail(null);
       setBusy(false);
     }
   }
 
   async function eraseDevice() {
-    if (!connected) return;
+    if (!connected || incompatibleDevice) return;
     try {
       setBusy(true);
       stopPreview();
@@ -416,7 +656,8 @@ export function App() {
           element: '[data-tour="uf2"]',
           popover: {
             title: 'Download firmware',
-            description: "Download the latest v2 UF2 firmware if you haven't already, then copy it to your pikocore in bootloader mode.",
+            description:
+              "Download the latest v2 UF2 firmware if you haven't already. Use Boot to put pikocore in drive mode, then copy the UF2 to it.",
             side: 'bottom',
             align: 'center',
           },
@@ -530,25 +771,60 @@ export function App() {
             <Upload size={18} />
             Upload
           </button>
-          <button data-tour="read" onClick={readDevice} disabled={!connected || busy} title="Read the sample bank from the device">
+          <button
+            data-tour="read"
+            onClick={readDevice}
+            disabled={!connected || incompatibleDevice != null || busy}
+            title="Read the sample bank from the device"
+          >
             <Download size={18} />
             Read
           </button>
-          <button data-tour="erase" onClick={eraseDevice} disabled={!connected || busy} title="Erase the sample bank from the device">
+          <button
+            data-tour="erase"
+            onClick={eraseDevice}
+            disabled={!connected || incompatibleDevice != null || busy}
+            title="Erase the sample bank from the device"
+          >
             <Eraser size={18} />
             Erase
           </button>
-          <a
-            className="button"
-            data-tour="uf2"
-            href={firmwareDownloadUrl}
-            download="pikocore.uf2"
-            title="Download the latest pikocore UF2 firmware"
-            aria-label="Download pikocore UF2 firmware"
-          >
-            <Download size={18} />
-            UF2
-          </a>
+          <div className="firmware-download" data-tour="uf2">
+            <select
+              className={selectedFirmware.default ? 'default-firmware' : undefined}
+              value={firmwareFile}
+              onChange={(event) => setFirmwareFile(event.currentTarget.value as (typeof firmwareOptions)[number]['file'])}
+              title="Choose UF2 firmware flash size"
+              aria-label="Choose UF2 firmware flash size"
+            >
+              {firmwareOptions.map((option) => (
+                <option key={option.file} value={option.file}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className={selectedFirmware.default ? 'primary' : undefined}
+              onClick={downloadFirmware}
+              disabled={busy}
+              title={selectedFirmware.title}
+              aria-label={selectedFirmware.title}
+            >
+              <Download size={18} />
+              UF2
+            </button>
+            <button
+              type="button"
+              onClick={enterBootloaderMode}
+              disabled={busy}
+              title="Put pikocore into BOOTSEL drive mode"
+              aria-label="Put pikocore into BOOTSEL drive mode"
+            >
+              <HardDrive size={18} />
+              Boot
+            </button>
+          </div>
           <button
             className="icon-button"
             onClick={startTour}
@@ -572,13 +848,13 @@ export function App() {
             className="clock-mode"
           >
             <label
-              className={!connected || busy ? 'disabled' : ''}
+              className={!connected || incompatibleDevice != null || busy ? 'disabled' : ''}
               title="Use serial MIDI from ittybittymidi on the clock input"
             >
               <input
                 type="checkbox"
                 checked={device?.ittybittymidiMode ?? false}
-                disabled={!connected || busy}
+                disabled={!connected || incompatibleDevice != null || busy}
                 onChange={(event) => void setIttybittymidiMode(event.currentTarget.checked)}
               />
               Ittybittymidi mode
@@ -597,6 +873,22 @@ export function App() {
           </div>
         </div>
       </header>
+
+      {incompatibleDevice ? (
+        <section className="firmware-warning" role="alert">
+          <strong>Firmware update required</strong>
+          <p>
+            The connected pikocore firmware {incompatibleDevice.firmware ? `(${incompatibleDevice.firmware}) ` : ''}is too old for this
+            loader. Install the latest UF2 firmware to continue, then reload this website after the new firmware is uploaded.
+            Installing firmware will remove the pikocore's current samples. Stock samples can be found{' '}
+            <a href="https://drive.google.com/file/d/1PyBJkbb_NRL8k7lSmdfswb9TaqgYocIz/view?usp=sharing" target="_blank" rel="noreferrer">
+              here
+            </a>
+            .
+          </p>
+          <p>Required firmware: {requiredFirmwareLabel}. Use the UF2 selector and download button above.</p>
+        </section>
+      ) : null}
 
       {ittybittymidiInfoOpen ? (
         <div className="modal-backdrop" role="presentation" onClick={() => setIttybittymidiInfoOpen(false)}>
@@ -642,7 +934,12 @@ export function App() {
         <div className="meter">
           <div className={overCapacity ? 'over' : ''} style={{ width: `${usageRatio * 100}%` }} />
         </div>
-        {busy && progress > 0 ? <div className="transfer" style={{ width: `${progress * 100}%` }} /> : null}
+        {busy && progress > 0 ? (
+          <>
+            <div className="transfer" style={{ width: `${progress * 100}%` }} />
+            {transferText ? <div className="transfer-detail">{transferText}</div> : null}
+          </>
+        ) : null}
       </section>
 
       {debugOpen ? (
@@ -673,7 +970,10 @@ export function App() {
         onDrop={(event) => {
           event.preventDefault();
           if (!connected) {
-            setStatus({ text: 'Connect to a pikocore before adding audio', kind: 'warn' });
+            setStatus({
+              text: incompatibleDevice ? 'Firmware update required before adding audio' : 'Connect to a pikocore before adding audio',
+              kind: 'warn',
+            });
             return;
           }
           void addFiles(event.dataTransfer.files);
@@ -875,6 +1175,30 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function formatTransferDetail(detail: TransferDetail): string {
+  const eta = detail.etaMs != null ? ` - ${formatEta(detail.etaMs)} remaining` : '';
+  if (detail.totalBytes == null) return `${formatBytes(detail.transferredBytes)}${eta}`;
+  return `${formatBytes(detail.transferredBytes)} / ${formatBytes(detail.totalBytes)}${eta}`;
+}
+
+function parseContentLength(value: string | null): number | null {
+  if (!value) return null;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+}
+
+function saveBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.style.display = 'none';
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
@@ -883,6 +1207,17 @@ function formatBytes(bytes: number): string {
 
 function formatDuration(frames: number): string {
   return `${(frames / BANK_SAMPLE_RATE).toFixed(2)} s`;
+}
+
+function formatEta(ms: number): string {
+  const seconds = Math.max(1, Math.ceil(ms / 1000));
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  if (minutes < 60) return remainingSeconds > 0 ? `${minutes}m ${remainingSeconds}s` : `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
 }
 
 function loadTheme(): Theme {

@@ -1,3 +1,5 @@
+import { BANK_HEADER_SIZE, BANK_MAX_SAMPLES, BANK_VERSION } from './bank';
+
 export interface DeviceInfo {
   firmware: string;
   reserveBytes: number;
@@ -9,7 +11,22 @@ export interface DeviceInfo {
   sampleRate: number;
   sampleCount: number;
   ittybittymidiMode: boolean;
+  protocolVersion?: number;
+  bankVersion?: number;
+  bankHeaderSize?: number;
+  bankMaxSamples?: number;
   raw: string;
+}
+
+export function isCompatibleFirmware(info: DeviceInfo): boolean {
+  return (
+    info.protocolVersion != null &&
+    info.protocolVersion >= 1 &&
+    info.bankVersion === BANK_VERSION &&
+    info.bankHeaderSize === BANK_HEADER_SIZE &&
+    info.bankMaxSamples != null &&
+    info.bankMaxSamples >= BANK_MAX_SAMPLES
+  );
 }
 
 const READ_CHUNK_SIZE = 1024;
@@ -23,6 +40,10 @@ const LINE_TIMEOUT_MS = 5000;
 const WRITE_READY_TIMEOUT_MS = 5000;
 const WRITE_DONE_TIMEOUT_MS = 60000;
 const ERASE_TIMEOUT_MS = 10000;
+const PIKOCORE_USB_VENDOR_ID = 0x2e8a;
+const PIKOCORE_USB_PRODUCT_ID = 0x4009;
+const BOOTSEL_MAGIC_BAUD_RATE = 1200;
+const BOOTSEL_SIGNAL_DELAY_MS = 50;
 
 export class PikocoreSerial {
   private port: SerialPort | null = null;
@@ -47,7 +68,7 @@ export class PikocoreSerial {
       throw new Error('Web Serial is not available in this browser');
     }
     this.port = await navigator.serial.requestPort({
-      filters: [{ usbVendorId: 0x2e8a, usbProductId: 0x4009 }],
+      filters: [{ usbVendorId: PIKOCORE_USB_VENDOR_ID, usbProductId: PIKOCORE_USB_PRODUCT_ID }],
     });
     const info = this.port.getInfo?.();
     this.log(`selected VID=${hex(info?.usbVendorId)} PID=${hex(info?.usbProductId)}`);
@@ -65,6 +86,35 @@ export class PikocoreSerial {
   }
 
   async disconnect(): Promise<void> {
+    await this.closeCurrentPort(true);
+  }
+
+  async resetToBootloader(): Promise<void> {
+    if (!navigator.serial) {
+      throw new Error('Web Serial is not available in this browser');
+    }
+    const port = await navigator.serial.requestPort({
+      filters: [{ usbVendorId: PIKOCORE_USB_VENDOR_ID, usbProductId: PIKOCORE_USB_PRODUCT_ID }],
+    });
+    if (this.port) await this.closeCurrentPort(true);
+    const info = port.getInfo?.();
+    this.log(`bootloader reset target VID=${hex(info?.usbVendorId)} PID=${hex(info?.usbProductId)}`);
+    try {
+      await port.open({ baudRate: BOOTSEL_MAGIC_BAUD_RATE, bufferSize: 255 });
+      this.log(`port opened at ${BOOTSEL_MAGIC_BAUD_RATE} baud for BOOTSEL reset`);
+      try {
+        await port.setSignals?.({ dataTerminalReady: true, requestToSend: true });
+      } catch (_) {}
+      await delay(BOOTSEL_SIGNAL_DELAY_MS);
+    } finally {
+      try {
+        await port.close();
+      } catch (_) {}
+    }
+    this.log('BOOTSEL reset signaled');
+  }
+
+  private async closeCurrentPort(sendAbort: boolean): Promise<void> {
     this.closing = true;
     const reader = this.reader;
     const writer = this.writer;
@@ -74,9 +124,11 @@ export class PikocoreSerial {
     this.port = null;
     this.readBuffer = new Uint8Array(0);
     this.notify();
-    try {
-      await writer?.write(new Uint8Array([TRANSFER_ABORT]));
-    } catch (_) {}
+    if (sendAbort) {
+      try {
+        await writer?.write(new Uint8Array([TRANSFER_ABORT]));
+      } catch (_) {}
+    }
     try {
       await reader?.cancel();
     } catch (_) {}
@@ -156,7 +208,7 @@ export class PikocoreSerial {
     if (line !== 'OK') throw new Error(`Clock input setting rejected: ${line}`);
   }
 
-  async readBank(progress?: (ratio: number) => void): Promise<Uint8Array | null> {
+  async readBank(progress?: (ratio: number, transferredBytes: number, totalBytes: number) => void): Promise<Uint8Array | null> {
     await this.sync();
     await this.writeString('R');
     const lenBytes = await this.waitForBytes(4, COMMAND_TIMEOUT_MS);
@@ -178,7 +230,7 @@ export class PikocoreSerial {
           if (nextAck >= totalLen) break;
           nextAck = Math.min(nextAck + READ_CHUNK_SIZE, totalLen);
         }
-        progress?.(received / totalLen);
+        progress?.(received / totalLen, received, totalLen);
       }
     } finally {
       this.suppressRxLog = false;
@@ -188,7 +240,7 @@ export class PikocoreSerial {
     return data;
   }
 
-  async writeBank(blob: Uint8Array, progress?: (ratio: number) => void): Promise<void> {
+  async writeBank(blob: Uint8Array, progress?: (ratio: number, transferredBytes: number, totalBytes: number) => void): Promise<void> {
     await this.sync();
     const len = new Uint8Array(4);
     new DataView(len.buffer).setUint32(0, blob.length, true);
@@ -199,7 +251,7 @@ export class PikocoreSerial {
     for (let offset = 0; offset < blob.length; offset += 256) {
       const end = Math.min(blob.length, offset + 256);
       await this.write(blob.slice(offset, end));
-      progress?.(end / blob.length);
+      progress?.(end / blob.length, end, blob.length);
       if ((offset & 0x0fff) === 0) await new Promise((resolve) => setTimeout(resolve, 0));
     }
     const done = await this.waitForLine(WRITE_DONE_TIMEOUT_MS);
@@ -211,6 +263,13 @@ export class PikocoreSerial {
     await this.writeString('E');
     const line = await this.waitForLine(ERASE_TIMEOUT_MS);
     if (line !== 'OK') throw new Error(`Erase failed: ${line}`);
+  }
+
+  async bootloader(): Promise<void> {
+    await this.sync();
+    await this.writeString('U');
+    const line = await this.waitForLine(COMMAND_TIMEOUT_MS);
+    if (line !== 'OK') throw new Error(`Bootloader reset rejected: ${line}`);
   }
 
   private async readLoop(reader: ReadableStreamDefaultReader<Uint8Array>): Promise<void> {
@@ -352,7 +411,7 @@ function findSequence(haystack: Uint8Array, needle: Uint8Array): number {
   return -1;
 }
 
-function parseInfo(text: string): DeviceInfo {
+export function parseInfo(text: string): DeviceInfo {
   const first = text.trim().split('\n')[0] ?? '';
   const parts = first.split(/\s+/);
   if (parts[0] !== 'PIKO1') throw new Error(`Bad metadata: ${first}`);
@@ -363,6 +422,12 @@ function parseInfo(text: string): DeviceInfo {
       if (index >= 0 && parts[index + 1]) return parts[index + 1];
     }
     return fallback;
+  };
+  const numberToken = (names: string | string[]) => {
+    const value = token(names, '');
+    if (!value) return undefined;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
   };
   return {
     firmware: token('FW', '--'),
@@ -375,6 +440,10 @@ function parseInfo(text: string): DeviceInfo {
     sampleRate: Number(token(['RATE', 'SR'], '24000')),
     sampleCount: Number(token(['COUNT', 'N'], '0')),
     ittybittymidiMode: token(['CLOCK_INPUT', 'CI'], 'CLOCK') === 'MIDI',
+    protocolVersion: numberToken('PROTO'),
+    bankVersion: numberToken('BANK_VERSION'),
+    bankHeaderSize: numberToken('BANK_HEADER_SIZE'),
+    bankMaxSamples: numberToken('BANK_MAX_SAMPLES'),
     raw: text,
   };
 }

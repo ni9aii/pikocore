@@ -61,12 +61,14 @@
 
 .app button,
 .app .button,
-.app input {
+.app input,
+.app select {
   font: inherit;
 }
 
 .app button,
-.app .button {
+.app .button,
+.app select {
   height: 34px;
   border: 1px solid var(--border-strong);
   background: var(--control);
@@ -81,6 +83,12 @@
 }
 
 .app button.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-text);
+}
+
+.app .button.primary {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--primary-text);
@@ -101,6 +109,17 @@
 
 .app .button input {
   display: none;
+}
+
+.app select {
+  min-width: 132px;
+  padding: 0 28px 0 9px;
+}
+
+.app select.default-firmware {
+  border-color: var(--primary);
+  box-shadow: inset 3px 0 0 var(--primary);
+  font-weight: 650;
 }
 
 .app .topbar {
@@ -161,6 +180,11 @@
   flex-wrap: wrap;
   gap: 8px;
   justify-content: flex-start;
+}
+
+.app .firmware-download {
+  display: inline-flex;
+  gap: 6px;
 }
 
 .app .toolbar-subrow {
@@ -227,6 +251,26 @@
 .app .icon-button[aria-pressed="true"] {
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.app .firmware-warning {
+  margin: 14px 0 0;
+  border: 1px solid color-mix(in srgb, var(--warn) 62%, var(--border));
+  border-left: 4px solid var(--warn);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--warn) 10%, var(--panel));
+  color: var(--text);
+  padding: 12px 14px;
+}
+
+.app .firmware-warning strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.app .firmware-warning p {
+  margin: 4px 0 0;
+  color: var(--muted);
 }
 
 .app .capacity {
@@ -486,6 +530,13 @@
   margin-top: 4px;
   background: var(--accent);
   border-radius: 4px;
+}
+
+.app .transfer-detail {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.3;
 }
 
 .app .sample-list {

@@ -1,6 +1,6 @@
 {
   "name": "pikocore-loader",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.0.0",
+    "arrival-time": "^1.0.6",
     "driver.js": "^1.4.0",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",

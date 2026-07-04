@@ -1,8 +1,9 @@
 export const BANK_MAGIC = 0x4f4b4950;
-export const BANK_VERSION = 1;
-export const BANK_HEADER_SIZE = 4096;
+export const BANK_VERSION = 2;
+export const BANK_HEADER_SIZE = 12288;
 export const BANK_SAMPLE_RATE = 24000;
-export const BANK_MAX_SAMPLES = 32;
+export const BANK_MAX_SAMPLES = 128;
+const BANK_FIXED_HEADER_SIZE = 32;
 export const BANK_SAMPLE_RECORD_SIZE = 64;
 export const BANK_SAMPLE_NAME_BYTES = 48;
 
@@ -90,7 +91,7 @@ export function buildBankBlob(samples: BankSample[], capacityBytes: number): Uin
 }
 
 export function parseBankBlob(blob: Uint8Array): ParsedBank {
-  if (blob.length < BANK_HEADER_SIZE) throw new Error('Bank blob is too small');
+  if (blob.length < BANK_FIXED_HEADER_SIZE) throw new Error('Bank blob is too small');
   const view = new DataView(blob.buffer, blob.byteOffset, blob.byteLength);
   const magic = view.getUint32(0, true);
   const version = view.getUint32(4, true);
@@ -102,6 +103,7 @@ export function parseBankBlob(blob: Uint8Array): ParsedBank {
   if (magic !== BANK_MAGIC || version !== BANK_VERSION || headerSize !== BANK_HEADER_SIZE) {
     throw new Error('Unsupported pikocore bank');
   }
+  if (blob.length < BANK_HEADER_SIZE) throw new Error('Bank blob is too small');
   if (sampleRate !== BANK_SAMPLE_RATE) throw new Error('Unsupported sample rate');
   if (sampleCount > BANK_MAX_SAMPLES) throw new Error('Too many samples in bank');
   if (BANK_HEADER_SIZE + audioBytes > blob.length) throw new Error('Bank audio is truncated');
