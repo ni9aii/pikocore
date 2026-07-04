@@ -5,6 +5,7 @@
 
 #include "PikoAudioBank.h"
 #include "hardware/flash.h"
+#include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "tusb.h"
 
@@ -12,6 +13,13 @@ void do_stop_everything();
 void do_start_everything();
 bool piko_clock_input_ittybittymidi();
 bool piko_set_clock_input_ittybittymidi(bool enabled);
+
+extern "C" void tud_cdc_line_coding_cb(uint8_t itf,
+                                       cdc_line_coding_t const* line_coding) {
+  if (itf == 0 && line_coding != nullptr && line_coding->bit_rate == 1200) {
+    reset_usb_boot(0, 0);
+  }
+}
 
 #ifndef XIP_BASE
 #define XIP_BASE 0x10000000u
@@ -137,6 +145,17 @@ void send_sync() {
   flush_serial();
 }
 
+[[noreturn]] void handle_bootloader_reset() {
+  do_stop_everything();
+  write_str("OK\n");
+  flush_serial();
+  sleep_ms(100);
+  reset_usb_boot(0, 0);
+  while (true) {
+    tight_loop_contents();
+  }
+}
+
 bool validate_header(const PikoBankHeader& header, uint32_t total_len) {
   if (total_len < PIKO_BANK_HEADER_SIZE) {
     return false;
@@ -168,7 +187,7 @@ void handle_info() {
   char info[256];
   uint32_t used = 0;
   int n = snprintf(info + used, sizeof(info) - used,
-                   "PIKO1 FW 2.0 F %lu R %lu S %lu A %lu C %lu U %lu SR %lu N %lu CLOCK_INPUT %s\nEND\n",
+                   "PIKO1 FW 2.2 F %lu R %lu S %lu A %lu C %lu U %lu SR %lu N %lu CLOCK_INPUT %s PROTO 1 BANK_VERSION %lu BANK_HEADER_SIZE %lu BANK_MAX_SAMPLES %lu\nEND\n",
                    static_cast<unsigned long>(piko_flash_total_bytes()),
                    static_cast<unsigned long>(PIKO_FIRMWARE_RESERVE),
                    static_cast<unsigned long>(piko_settings_flash_offset()),
@@ -177,7 +196,10 @@ void handle_info() {
                    static_cast<unsigned long>(piko_audio_audio_bytes()),
                    static_cast<unsigned long>(PIKO_BANK_SAMPLE_RATE),
                    static_cast<unsigned long>(piko_audio_sample_count()),
-                   piko_clock_input_ittybittymidi() ? "MIDI" : "CLOCK");
+                   piko_clock_input_ittybittymidi() ? "MIDI" : "CLOCK",
+                   static_cast<unsigned long>(PIKO_BANK_VERSION),
+                   static_cast<unsigned long>(PIKO_BANK_HEADER_SIZE),
+                   static_cast<unsigned long>(PIKO_BANK_MAX_SAMPLES));
   if (n < 0 || static_cast<uint32_t>(n) >= sizeof(info) - used) {
     return;
   }
@@ -221,7 +243,7 @@ void handle_read() {
 
 void erase_bank_header() {
   piko_audio_bank_set_mutating(true);
-  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, kFlashSectorSize);
+  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
   piko_audio_bank_rescan();
   piko_audio_bank_set_mutating(false);
 }
@@ -275,7 +297,7 @@ void handle_write() {
 
   piko_audio_bank_set_mutating(true);
 
-  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, kFlashSectorSize);
+  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
 
   uint32_t bytes_written = PIKO_BANK_HEADER_SIZE;
   uint32_t audio_flash_off = PIKO_AUDIO_FLASH_OFFSET + PIKO_BANK_HEADER_SIZE;
@@ -384,6 +406,9 @@ void piko_sample_manager_core() {
         break;
       case 'C':
         handle_clock_input_mode();
+        break;
+      case 'U':
+        handle_bootloader_reset();
         break;
       default:
         break;

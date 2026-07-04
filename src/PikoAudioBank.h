@@ -4,14 +4,14 @@
 #include <stdint.h>
 
 static constexpr uint32_t PIKO_BANK_MAGIC = 0x4f4b4950u;  // "PIKO"
-static constexpr uint32_t PIKO_BANK_VERSION = 1u;
-static constexpr uint32_t PIKO_BANK_HEADER_SIZE = 4096u;
+static constexpr uint32_t PIKO_BANK_VERSION = 2u;
+static constexpr uint32_t PIKO_BANK_HEADER_SIZE = 12288u;
 static constexpr uint32_t PIKO_BANK_SAMPLE_RATE = 24000u;
-static constexpr uint32_t PIKO_BANK_MAX_SAMPLES = 32u;
+static constexpr uint32_t PIKO_BANK_MAX_SAMPLES = 128u;
 static constexpr uint32_t PIKO_FLASH_SECTOR_SIZE = 4096u;
 
 #ifndef PICO_FLASH_SIZE_BYTES
-#define PICO_FLASH_SIZE_BYTES (2u * 1024u * 1024u)
+#define PICO_FLASH_SIZE_BYTES (16u * 1024u * 1024u)
 #endif
 
 #ifndef PIKO_FIRMWARE_RESERVE
@@ -59,7 +59,9 @@ struct PikoBankHeader {
 static_assert(sizeof(PikoBankSampleRecord) == 64u,
               "Pikocore bank sample records must stay 64 bytes");
 static_assert(sizeof(PikoBankHeader) <= PIKO_BANK_HEADER_SIZE,
-              "Pikocore bank header must fit in one flash sector");
+              "Pikocore bank header must fit in the reserved header space");
+static_assert(PIKO_BANK_HEADER_SIZE % PIKO_FLASH_SECTOR_SIZE == 0u,
+              "Pikocore bank header must stay flash-sector aligned");
 static_assert(PIKO_FIRMWARE_RESERVE >= 2u * PIKO_FLASH_SECTOR_SIZE,
               "Firmware reserve must leave room for settings and audio header");
 

@@ -77,7 +77,10 @@ uint32_t clamp_sample_index(uint32_t sample_index) {
 }  // namespace
 
 void piko_audio_bank_init() {
-  flash_total_bytes = detect_flash_total_bytes();
+  const uint32_t detected_flash_total_bytes = detect_flash_total_bytes();
+  flash_total_bytes = detected_flash_total_bytes < PIKO_COMPILED_FLASH_TOTAL_BYTES
+                          ? detected_flash_total_bytes
+                          : PIKO_COMPILED_FLASH_TOTAL_BYTES;
   audio_capacity_bytes = capacity_from_flash_size(flash_total_bytes);
   piko_audio_bank_rescan();
 }
