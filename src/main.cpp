@@ -1357,6 +1357,9 @@ int main(void) {
 
   service_usb_startup(1500);
   multicore_launch_core1(piko_sample_manager_core);
+  // core1 erases/programs flash for sample bank uploads, which disables XIP;
+  // core0 must be parked during that window since it executes from flash.
+  multicore_lockout_victim_init();
 
   // initialize clocking and PWM interrupts
   // overclock at a multiple of sampling rate
@@ -1475,10 +1478,15 @@ int main(void) {
 #ifdef DEBUG_SAVE
     print_buf(save_data, FLASH_PAGE_SIZE);
 #endif
+    // core1 runs piko_sample_manager_core() continuously from flash, so it
+    // must be parked here too — save_and_disable_interrupts() only covers
+    // core0 and doesn't stop core1 from executing during the XIP outage.
+    multicore_lockout_start_blocking();
     uint32_t ints = save_and_disable_interrupts();
     flash_range_erase(PIKO_SETTINGS_FLASH_OFFSET, FLASH_SECTOR_SIZE);
     flash_range_program(PIKO_SETTINGS_FLASH_OFFSET, save_data, FLASH_PAGE_SIZE);
     restore_interrupts(ints);
+    multicore_lockout_end_blocking();
   };
 
   // initialize one wire midi

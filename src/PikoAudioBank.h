@@ -3,6 +3,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// PICO_FLASH_SIZE_BYTES is provided by the board header (e.g. boards/pico.h),
+// which is pulled in transitively via pico/stdlib.h before this header is
+// compiled. The #ifndef below is only a fallback for boards that don't
+// define it (defaults to 16 MiB). On a stock Pico this resolves to 2 MiB.
+
 static constexpr uint32_t PIKO_BANK_MAGIC = 0x4f4b4950u;  // "PIKO"
 static constexpr uint32_t PIKO_BANK_VERSION = 2u;
 static constexpr uint32_t PIKO_BANK_HEADER_SIZE = 12288u;

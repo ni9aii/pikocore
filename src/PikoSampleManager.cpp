@@ -6,6 +6,7 @@
 #include "PikoAudioBank.h"
 #include "hardware/flash.h"
 #include "pico/bootrom.h"
+#include "pico/multicore.h"
 #include "pico/stdlib.h"
 #include "tusb.h"
 
@@ -50,6 +51,29 @@ struct ScopedPlaybackMute {
     piko_audio_bank_set_mutating(false);
   }
 };
+
+// core0 executes from flash continuously (main loop, audio ISR), so it must
+// be parked while flash_range_erase/flash_range_program disable XIP — those
+// calls issue raw QSPI commands and don't do this locking themselves.
+struct ScopedFlashLockout {
+  ScopedFlashLockout() {
+    multicore_lockout_start_blocking();
+  }
+
+  ~ScopedFlashLockout() {
+    multicore_lockout_end_blocking();
+  }
+};
+
+void erase_range_locked(uint32_t offset, uint32_t size) {
+  ScopedFlashLockout lockout;
+  flash_range_erase(offset, size);
+}
+
+void program_range_locked(uint32_t offset, const uint8_t* data, uint32_t size) {
+  ScopedFlashLockout lockout;
+  flash_range_program(offset, data, size);
+}
 
 void service_usb() {
   tud_task();
@@ -243,7 +267,7 @@ void handle_read() {
 
 void erase_bank_header() {
   piko_audio_bank_set_mutating(true);
-  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
+  erase_range_locked(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
   piko_audio_bank_rescan();
   piko_audio_bank_set_mutating(false);
 }
@@ -297,7 +321,7 @@ void handle_write() {
 
   piko_audio_bank_set_mutating(true);
 
-  flash_range_erase(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
+  erase_range_locked(PIKO_AUDIO_FLASH_OFFSET, PIKO_BANK_HEADER_SIZE);
 
   uint32_t bytes_written = PIKO_BANK_HEADER_SIZE;
   uint32_t audio_flash_off = PIKO_AUDIO_FLASH_OFFSET + PIKO_BANK_HEADER_SIZE;
@@ -317,17 +341,17 @@ void handle_write() {
 
     const uint32_t page_off = audio_flash_off + (bytes_written - PIKO_BANK_HEADER_SIZE);
     if (page_off >= next_erase) {
-      flash_range_erase(next_erase, kFlashSectorSize);
+      erase_range_locked(next_erase, kFlashSectorSize);
       next_erase += kFlashSectorSize;
     }
-    flash_range_program(page_off, page_buf, sizeof(page_buf));
+    program_range_locked(page_off, page_buf, sizeof(page_buf));
     bytes_written += page_fill;
   }
 
   memset(page_buf, 0xff, sizeof(page_buf));
   for (uint32_t offset = 0; offset < PIKO_BANK_HEADER_SIZE; offset += kFlashPageSize) {
     memcpy(page_buf, header_staging + offset, kFlashPageSize);
-    flash_range_program(PIKO_AUDIO_FLASH_OFFSET + offset, page_buf, sizeof(page_buf));
+    program_range_locked(PIKO_AUDIO_FLASH_OFFSET + offset, page_buf, sizeof(page_buf));
   }
 
   piko_audio_bank_rescan();
@@ -360,6 +384,11 @@ void piko_sample_manager_set_ready() {
 }
 
 void piko_sample_manager_core() {
+  // core1 is the victim when core0 calls multicore_lockout_start_blocking()
+  // from save_settings() (main.cpp). Without this, core0 hangs forever in
+  // that call waiting for a lockout handshake that core1 never answers.
+  multicore_lockout_victim_init();
+
   while (true) {
     service_usb();
     if (!serial_connected()) {
