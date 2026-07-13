@@ -18,6 +18,7 @@
 
 #include "PikoAudioBank.h"
 #include "PikoSampleManager.h"
+#include "Settings.h"
 // pikocore files
 #include "doth/button.h"
 #include "doth/delay.h"
@@ -66,17 +67,6 @@
 // flash
 // https://github.com/raspberrypi/pico-examples/blob/master/flash/program/flash_program.c
 // https://kevinboone.me/picoflash.html
-#define SAVE_VOLUME 0  // needs two bytes
-#define SAVE_BPM 2     // needs two bytes
-#define SAVE_FILTER 4  // needs one byte
-#define SAVE_SAMPLE 5  // needs one byte
-#define SAVE_GATE 6    // needs two bytes
-#define SAVE_PROB_DIRECTION 8
-#define SAVE_PROB_RETRIG 9
-#define SAVE_PROB_JUMP 10
-#define SAVE_PROB_GATE 11
-#define SAVE_PROB_TUNNEL 12
-#define SAVE_CLOCK_INPUT_MODE 13
 #define CLOCK_INPUT_CLOCK 0
 #define CLOCK_INPUT_MIDI 1
 #define MIDI_NOTES_AVAILABLE_TOTAL 28
@@ -93,6 +83,8 @@ uint8_t midi_notes_available[MIDI_NOTES_AVAILABLE_TOTAL] = {
     36, 38, 40, 41, 43, 45, 47, 48, 50, 52, 53, 55, 57, 59,
     60, 62, 64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83};
 uint8_t midi_notes_set[8] = {36, 38, 40, 41, 43, 45, 47, 48};
+
+PikoSettings g_settings;
 
 const uint8_t *flash_target_contents =
     (const uint8_t *)(XIP_BASE + PIKO_SETTINGS_FLASH_OFFSET);
@@ -235,8 +227,7 @@ void param_set_break(uint16_t knob_val, uint8_t &filter_fc_,
                      uint8_t &distortion_, uint8_t &probability_jump_,
                      uint8_t &probability_retrig_, uint8_t &probability_gate_,
                      uint8_t &probability_direction_,
-                     uint8_t &probability_tunnel_,
-                     uint8_t save_data_[FLASH_PAGE_SIZE]) {
+                     uint8_t &probability_tunnel_) {
   if (knob_val < 50) {
     // turn it all off
     distortion_ = 0;
@@ -253,15 +244,13 @@ void param_set_break(uint16_t knob_val, uint8_t &filter_fc_,
     probability_direction_ = ease_probability_direction(knob_val);
     probability_tunnel_ = ease_probability_tunnel(knob_val);
   }
-  save_data_[SAVE_PROB_JUMP] = probability_jump_;
-  save_data_[SAVE_PROB_DIRECTION] = probability_direction_;
-  save_data_[SAVE_PROB_RETRIG] = probability_retrig_;
-  save_data_[SAVE_PROB_GATE] = probability_gate_;
-  save_data_[SAVE_PROB_TUNNEL] = probability_tunnel_;
-  save_data_[SAVE_VOLUME] =
-      (uint8_t)((distortion_ * 1095 / DISTORTION_MAX + 3000) >> 8);
-  save_data_[SAVE_VOLUME + 1] =
-      (uint8_t)(distortion_ * 1095 / DISTORTION_MAX + 3000);
+  g_settings.prob_jump = probability_jump_;
+  g_settings.prob_direction = probability_direction_;
+  g_settings.prob_retrig = probability_retrig_;
+  g_settings.prob_gate = probability_gate_;
+  g_settings.prob_tunnel = probability_tunnel_;
+  g_settings.volume =
+      static_cast<uint16_t>((distortion_ * 1095 / DISTORTION_MAX + 3000));
 }
 
 void param_set_bpm(uint16_t bpm, uint16_t &bpm_set_, uint32_t &beat_thresh_,
@@ -1418,15 +1407,12 @@ int main(void) {
     save_data[i] = 0;
   }
   // // save defaults that aren't defaulted to 0
-  save_data[SAVE_VOLUME] = (uint8_t)(2500 >> 8);
-  save_data[SAVE_VOLUME + 1] = (uint8_t)2500;
-  save_data[SAVE_BPM] = (uint8_t)(165 >> 8);
-  save_data[SAVE_BPM + 1] = (uint8_t)165;
+  g_settings.volume = 2500;
+  g_settings.bpm = 165;
   noise_gate_thresh = gate_default_thresh();
   noise_gate_thresh_use = noise_gate_thresh;
-  save_data[SAVE_GATE] = (uint8_t)(noise_gate_thresh >> 8);
-  save_data[SAVE_GATE + 1] = (uint8_t)noise_gate_thresh;
-  save_data[SAVE_CLOCK_INPUT_MODE] = CLOCK_INPUT_CLOCK;
+  g_settings.gate = noise_gate_thresh;
+  g_settings.clock_input_mode = CLOCK_INPUT_CLOCK;
 
   // initializer trigger
   output_trigger.Init(TRIGO_PIN, 10, MAIN_LOOP_HZ);
@@ -1475,6 +1461,7 @@ int main(void) {
     save_data[FLASH_PAGE_SIZE - 3] = 0x03;
     save_data[FLASH_PAGE_SIZE - 4] = 0x04;
     sequencer.Save(save_data);
+    settings_save(g_settings, save_data);
 #ifdef DEBUG_SAVE
     print_buf(save_data, FLASH_PAGE_SIZE);
 #endif
@@ -1546,7 +1533,7 @@ int main(void) {
       const bool requested = clock_input_write_value;
       clock_input_write_pending = false;
       clock_input_ittybittymidi = requested;
-      save_data[SAVE_CLOCK_INPUT_MODE] =
+      g_settings.clock_input_mode =
           requested ? CLOCK_INPUT_MIDI : CLOCK_INPUT_CLOCK;
       reset_clock_timing();
       save_settings();
@@ -1591,11 +1578,12 @@ int main(void) {
         for (uint i = 0; i < FLASH_PAGE_SIZE; i++) {
           save_data[i] = flash_target_contents[i];
         }
-        param_set_volume((uint16_t)(save_data[SAVE_VOLUME] << 8) +
-                             save_data[SAVE_VOLUME + 1],
-                         distortion, volume_reduce);
-        // filter_fc = flash_target_contents[SAVE_FILTER];
-        sample_change = save_data[SAVE_SAMPLE];
+        PikoSettings loaded;
+        settings_load(loaded);
+        g_settings = loaded;
+        param_set_volume(loaded.volume, distortion, volume_reduce);
+        // filter_fc = loaded.filter;
+        sample_change = loaded.sample;
         if (piko_audio_sample_count() > 0) {
           sample_change %= piko_audio_sample_count();
           sample = sample_change;
@@ -1604,19 +1592,16 @@ int main(void) {
           sample_change = 0;
           sample = 0;
         }
-        param_set_bpm(
-            (uint16_t)(save_data[SAVE_BPM] << 8) + save_data[SAVE_BPM + 1],
-            bpm_set, beat_thresh, audio_clk_thresh);
-        noise_gate_thresh =
-            (uint16_t)(save_data[SAVE_GATE] << 8) + save_data[SAVE_GATE + 1];
-        probability_direction = save_data[SAVE_PROB_DIRECTION];
-        probability_jump = save_data[SAVE_PROB_JUMP];
-        probability_retrig = save_data[SAVE_PROB_RETRIG];
-        probability_gate = save_data[SAVE_PROB_GATE];
-        probability_tunnel = save_data[SAVE_PROB_TUNNEL];
+        param_set_bpm(loaded.bpm, bpm_set, beat_thresh, audio_clk_thresh);
+        noise_gate_thresh = loaded.gate;
+        probability_direction = loaded.prob_direction;
+        probability_jump = loaded.prob_jump;
+        probability_retrig = loaded.prob_retrig;
+        probability_gate = loaded.prob_gate;
+        probability_tunnel = loaded.prob_tunnel;
         clock_input_ittybittymidi =
-            save_data[SAVE_CLOCK_INPUT_MODE] == CLOCK_INPUT_MIDI;
-        save_data[SAVE_CLOCK_INPUT_MODE] =
+            loaded.clock_input_mode == CLOCK_INPUT_MIDI;
+        g_settings.clock_input_mode =
             clock_input_ittybittymidi ? CLOCK_INPUT_MIDI : CLOCK_INPUT_CLOCK;
         reset_clock_timing();
         sequencer.Load(save_data);
@@ -1754,7 +1739,7 @@ int main(void) {
                       sample_change = sample_count - 1;
                     }
                     debounce_sample = 500;
-                    save_data[SAVE_SAMPLE] = sample_change;
+                    g_settings.sample = sample_change;
                   }
                   break;
                 case 1:
@@ -1770,8 +1755,7 @@ int main(void) {
                         gate_scaled_thresh(input_knob[i].Value(),
                                            input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_GATE] = (uint8_t)(noise_gate_thresh >> 8);
-                  save_data[SAVE_GATE + 1] = (uint8_t)noise_gate_thresh;
+                  g_settings.gate = noise_gate_thresh;
                   break;
                 case 3:
                   // jump probability
@@ -1781,7 +1765,7 @@ int main(void) {
                     probability_jump = (input_knob[i].Value() * 254 /
                                         input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_PROB_JUMP] = probability_jump;
+                  g_settings.prob_jump = probability_jump;
                   break;
                 case 4:
                   // tunnel probability
@@ -1791,7 +1775,7 @@ int main(void) {
                     probability_tunnel = (input_knob[i].Value() * 254 /
                                           input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_PROB_TUNNEL] = probability_tunnel;
+                  g_settings.prob_tunnel = probability_tunnel;
                   break;
                 case 5:
                   // sequencer rec
@@ -1818,9 +1802,8 @@ int main(void) {
                   break;
                 case 7:
                   // volume
-                  save_data[SAVE_VOLUME] =
-                      (uint8_t)(input_knob[i].Value() >> 8);
-                  save_data[SAVE_VOLUME + 1] = (uint8_t)input_knob[i].Value();
+                  g_settings.volume =
+                      static_cast<uint16_t>(input_knob[i].Value());
                   param_set_volume(input_knob[i].Value(), distortion,
                                    volume_reduce);
 #ifdef DEBUG_KNOB
@@ -1843,7 +1826,7 @@ int main(void) {
                   param_set_break(input_knob[i].Value(), filter_fc, distortion,
                                   probability_jump, probability_retrig,
                                   probability_gate, probability_direction,
-                                  probability_tunnel, save_data);
+                                  probability_tunnel);
                   break;
                 case 1:
                   // stretch
@@ -1857,7 +1840,7 @@ int main(void) {
                     probability_gate = (input_knob[i].Value() * 254 /
                                         input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_PROB_GATE] = probability_gate;
+                  g_settings.prob_gate = probability_gate;
                   break;
                 case 3:
                   // retrig probability
@@ -1867,7 +1850,7 @@ int main(void) {
                     probability_retrig = (input_knob[i].Value() * 254 /
                                           input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_PROB_RETRIG] = probability_retrig;
+                  g_settings.prob_retrig = probability_retrig;
                   break;
                 case 4:
                   // reverse probability
@@ -1877,7 +1860,7 @@ int main(void) {
                     probability_direction = (input_knob[i].Value() * 254 /
                                              input_knob[i].ValueMax());
                   }
-                  save_data[SAVE_PROB_DIRECTION] = probability_direction;
+                  g_settings.prob_direction = probability_direction;
                   break;
                 case 5:
                   // sequencer on
@@ -1913,8 +1896,7 @@ int main(void) {
 #ifdef DEBUG_KNOB
                       printf("%d: %d; \n", i, input_knob[i].Value());
 #endif
-                      save_data[SAVE_BPM] = (uint8_t)(bpm_set_new >> 8);
-                      save_data[SAVE_BPM + 1] = (uint8_t)bpm_set_new;
+                      g_settings.bpm = bpm_set_new;
 
                       param_set_bpm(bpm_set_new, bpm_set, beat_thresh,
                                     audio_clk_thresh);
