@@ -1,3189 +1,1605 @@
 uint8_t ease_distortion(uint16_t v) {
-  v = v / 8;
-  if (v < 438) {
-    return 0;
-  } else if (v < 440) {
-    return 1;
-  } else if (v < 442) {
-    return 3;
-  } else if (v < 443) {
-    return 5;
-  } else if (v < 444) {
-    return 8;
-  } else if (v < 445) {
-    return 9;
-  } else if (v < 448) {
-    return 11;
-  } else if (v < 449) {
-    return 12;
-  } else if (v < 450) {
-    return 13;
-  } else if (v < 452) {
-    return 15;
-  } else if (v < 453) {
-    return 17;
-  } else if (v < 454) {
-    return 17;
-  } else if (v < 456) {
-    return 20;
-  } else if (v < 457) {
-    return 23;
-  } else if (v < 460) {
-    return 25;
-  } else if (v < 461) {
-    return 28;
-  } else if (v < 462) {
-    return 29;
-  } else if (v < 463) {
-    return 33;
-  } else if (v < 465) {
-    return 34;
-  } else if (v < 466) {
-    return 36;
-  } else if (v < 467) {
-    return 38;
-  } else if (v < 469) {
-    return 40;
-  } else if (v < 470) {
-    return 41;
-  } else if (v < 471) {
-    return 46;
-  } else if (v < 472) {
-    return 48;
-  } else if (v < 473) {
-    return 50;
-  } else if (v < 474) {
-    return 53;
-  } else if (v < 475) {
-    return 53;
-  } else if (v < 476) {
-    return 56;
-  } else if (v < 477) {
-    return 59;
-  } else if (v < 479) {
-    return 60;
-  } else if (v < 481) {
-    return 64;
-  } else if (v < 484) {
-    return 69;
-  } else if (v < 485) {
-    return 77;
-  } else if (v < 486) {
-    return 80;
-  } else if (v < 487) {
-    return 85;
-  } else if (v < 488) {
-    return 86;
-  } else if (v < 489) {
-    return 89;
-  } else if (v < 490) {
-    return 91;
-  } else if (v < 491) {
-    return 100;
-  } else if (v < 492) {
-    return 102;
-  } else if (v < 493) {
-    return 109;
-  } else if (v < 495) {
-    return 113;
-  } else if (v < 496) {
-    return 164;
-  } else if (v < 497) {
-    return 174;
-  } else if (v < 498) {
-    return 182;
-  } else if (v < 499) {
-    return 191;
-  } else if (v < 500) {
-    return 196;
-  } else if (v < 501) {
-    return 199;
-  } else if (v < 502) {
-    return 210;
-  } else if (v < 503) {
-    return 218;
-  } else if (v < 504) {
-    return 221;
-  } else if (v < 505) {
-    return 228;
-  } else if (v < 506) {
-    return 229;
-  } else if (v < 507) {
-    return 241;
-  } else if (v < 508) {
-    return 242;
-  } else if (v < 509) {
-    return 255;
-  }
-  return 255;
+	v=v/8;
+	if (v<438) { return 0; }
+	else if (v<440) { return  1; }
+	else if (v<442) { return  3; }
+	else if (v<443) { return  5; }
+	else if (v<444) { return  8; }
+	else if (v<445) { return  9; }
+	else if (v<448) { return  11; }
+	else if (v<449) { return  12; }
+	else if (v<450) { return  13; }
+	else if (v<452) { return  15; }
+	else if (v<453) { return  17; }
+	else if (v<454) { return  17; }
+	else if (v<456) { return  20; }
+	else if (v<457) { return  23; }
+	else if (v<460) { return  25; }
+	else if (v<461) { return  28; }
+	else if (v<462) { return  29; }
+	else if (v<463) { return  33; }
+	else if (v<465) { return  34; }
+	else if (v<466) { return  36; }
+	else if (v<467) { return  38; }
+	else if (v<469) { return  40; }
+	else if (v<470) { return  41; }
+	else if (v<471) { return  46; }
+	else if (v<472) { return  48; }
+	else if (v<473) { return  50; }
+	else if (v<474) { return  53; }
+	else if (v<475) { return  53; }
+	else if (v<476) { return  56; }
+	else if (v<477) { return  59; }
+	else if (v<479) { return  60; }
+	else if (v<481) { return  64; }
+	else if (v<484) { return  69; }
+	else if (v<485) { return  77; }
+	else if (v<486) { return  80; }
+	else if (v<487) { return  85; }
+	else if (v<488) { return  86; }
+	else if (v<489) { return  89; }
+	else if (v<490) { return  91; }
+	else if (v<491) { return  100; }
+	else if (v<492) { return  102; }
+	else if (v<493) { return  109; }
+	else if (v<495) { return  113; }
+	else if (v<496) { return  164; }
+	else if (v<497) { return  174; }
+	else if (v<498) { return  182; }
+	else if (v<499) { return  191; }
+	else if (v<500) { return  196; }
+	else if (v<501) { return  199; }
+	else if (v<502) { return  210; }
+	else if (v<503) { return  218; }
+	else if (v<504) { return  221; }
+	else if (v<505) { return  228; }
+	else if (v<506) { return  229; }
+	else if (v<507) { return  241; }
+	else if (v<508) { return  242; }
+	else if (v<509) { return  255; }
+	 return 255;
 }
 uint8_t ease_filter_fc(uint16_t v) {
-  v = v / 8;
-  if (v < 2) {
-    return 0;
-  } else if (v < 5) {
-    return 1;
-  } else if (v < 7) {
-    return 3;
-  } else if (v < 9) {
-    return 4;
-  } else if (v < 10) {
-    return 5;
-  } else if (v < 11) {
-    return 6;
-  } else if (v < 13) {
-    return 6;
-  } else if (v < 14) {
-    return 8;
-  } else if (v < 16) {
-    return 10;
-  } else if (v < 17) {
-    return 12;
-  } else if (v < 18) {
-    return 13;
-  } else if (v < 20) {
-    return 14;
-  } else if (v < 21) {
-    return 15;
-  } else if (v < 22) {
-    return 17;
-  } else if (v < 23) {
-    return 19;
-  } else if (v < 24) {
-    return 21;
-  } else if (v < 25) {
-    return 21;
-  } else if (v < 26) {
-    return 23;
-  } else if (v < 27) {
-    return 27;
-  } else if (v < 28) {
-    return 28;
-  } else if (v < 29) {
-    return 30;
-  } else if (v < 30) {
-    return 32;
-  } else if (v < 31) {
-    return 35;
-  } else if (v < 32) {
-    return 39;
-  } else if (v < 33) {
-    return 41;
-  } else if (v < 34) {
-    return 43;
-  } else if (v < 35) {
-    return 51;
-  } else if (v < 36) {
-    return 56;
-  } else if (v < 37) {
-    return 64;
-  } else if (v < 39) {
-    return 71;
-  } else if (v < 40) {
-    return 83;
-  } else if (v < 41) {
-    return 99;
-  } else if (v < 42) {
-    return 117;
-  } else if (v < 43) {
-    return 136;
-  } else if (v < 45) {
-    return 145;
-  } else if (v < 46) {
-    return 152;
-  } else if (v < 47) {
-    return 159;
-  } else if (v < 48) {
-    return 168;
-  } else if (v < 50) {
-    return 174;
-  } else if (v < 51) {
-    return 187;
-  } else if (v < 52) {
-    return 193;
-  } else if (v < 53) {
-    return 198;
-  } else if (v < 54) {
-    return 204;
-  } else if (v < 55) {
-    return 210;
-  } else if (v < 56) {
-    return 217;
-  } else if (v < 57) {
-    return 225;
-  } else if (v < 58) {
-    return 232;
-  } else if (v < 59) {
-    return 237;
-  } else if (v < 60) {
-    return 255;
-  }
-  return 255;
+	v=v/8;
+	if (v<2) { return 0; }
+	else if (v<5) { return  1; }
+	else if (v<7) { return  3; }
+	else if (v<9) { return  4; }
+	else if (v<10) { return  5; }
+	else if (v<11) { return  6; }
+	else if (v<13) { return  6; }
+	else if (v<14) { return  8; }
+	else if (v<16) { return  10; }
+	else if (v<17) { return  12; }
+	else if (v<18) { return  13; }
+	else if (v<20) { return  14; }
+	else if (v<21) { return  15; }
+	else if (v<22) { return  17; }
+	else if (v<23) { return  19; }
+	else if (v<24) { return  21; }
+	else if (v<25) { return  21; }
+	else if (v<26) { return  23; }
+	else if (v<27) { return  27; }
+	else if (v<28) { return  28; }
+	else if (v<29) { return  30; }
+	else if (v<30) { return  32; }
+	else if (v<31) { return  35; }
+	else if (v<32) { return  39; }
+	else if (v<33) { return  41; }
+	else if (v<34) { return  43; }
+	else if (v<35) { return  51; }
+	else if (v<36) { return  56; }
+	else if (v<37) { return  64; }
+	else if (v<39) { return  71; }
+	else if (v<40) { return  83; }
+	else if (v<41) { return  99; }
+	else if (v<42) { return  117; }
+	else if (v<43) { return  136; }
+	else if (v<45) { return  145; }
+	else if (v<46) { return  152; }
+	else if (v<47) { return  159; }
+	else if (v<48) { return  168; }
+	else if (v<50) { return  174; }
+	else if (v<51) { return  187; }
+	else if (v<52) { return  193; }
+	else if (v<53) { return  198; }
+	else if (v<54) { return  204; }
+	else if (v<55) { return  210; }
+	else if (v<56) { return  217; }
+	else if (v<57) { return  225; }
+	else if (v<58) { return  232; }
+	else if (v<59) { return  237; }
+	else if (v<60) { return  255; }
+	 return 255;
 }
 uint8_t ease_probability_direction(uint16_t v) {
-  v = v / 8;
-  if (v < 2) {
-    return 0;
-  } else if (v < 3) {
-    return 2;
-  } else if (v < 4) {
-    return 2;
-  } else if (v < 5) {
-    return 2;
-  } else if (v < 6) {
-    return 2;
-  } else if (v < 7) {
-    return 2;
-  } else if (v < 10) {
-    return 2;
-  } else if (v < 11) {
-    return 2;
-  } else if (v < 12) {
-    return 3;
-  } else if (v < 14) {
-    return 3;
-  } else if (v < 18) {
-    return 4;
-  } else if (v < 20) {
-    return 7;
-  } else if (v < 24) {
-    return 9;
-  } else if (v < 27) {
-    return 12;
-  } else if (v < 32) {
-    return 16;
-  } else if (v < 35) {
-    return 21;
-  } else if (v < 37) {
-    return 23;
-  } else if (v < 40) {
-    return 25;
-  } else if (v < 43) {
-    return 28;
-  } else if (v < 44) {
-    return 30;
-  } else if (v < 46) {
-    return 31;
-  } else if (v < 47) {
-    return 32;
-  } else if (v < 48) {
-    return 32;
-  } else if (v < 50) {
-    return 32;
-  } else if (v < 51) {
-    return 31;
-  } else if (v < 54) {
-    return 30;
-  } else if (v < 55) {
-    return 29;
-  } else if (v < 57) {
-    return 27;
-  } else if (v < 59) {
-    return 25;
-  } else if (v < 61) {
-    return 24;
-  } else if (v < 63) {
-    return 21;
-  } else if (v < 64) {
-    return 21;
-  } else if (v < 66) {
-    return 19;
-  } else if (v < 67) {
-    return 17;
-  } else if (v < 68) {
-    return 17;
-  } else if (v < 69) {
-    return 17;
-  } else if (v < 70) {
-    return 16;
-  } else if (v < 71) {
-    return 15;
-  } else if (v < 72) {
-    return 13;
-  } else if (v < 73) {
-    return 12;
-  } else if (v < 74) {
-    return 11;
-  } else if (v < 75) {
-    return 10;
-  } else if (v < 77) {
-    return 9;
-  } else if (v < 79) {
-    return 9;
-  } else if (v < 80) {
-    return 8;
-  } else if (v < 81) {
-    return 7;
-  } else if (v < 83) {
-    return 7;
-  } else if (v < 85) {
-    return 7;
-  } else if (v < 86) {
-    return 7;
-  } else if (v < 87) {
-    return 7;
-  } else if (v < 89) {
-    return 7;
-  } else if (v < 91) {
-    return 7;
-  } else if (v < 98) {
-    return 9;
-  } else if (v < 101) {
-    return 13;
-  } else if (v < 105) {
-    return 17;
-  } else if (v < 108) {
-    return 23;
-  } else if (v < 111) {
-    return 28;
-  } else if (v < 114) {
-    return 33;
-  } else if (v < 115) {
-    return 36;
-  } else if (v < 116) {
-    return 38;
-  } else if (v < 117) {
-    return 41;
-  } else if (v < 119) {
-    return 42;
-  } else if (v < 123) {
-    return 42;
-  } else if (v < 124) {
-    return 41;
-  } else if (v < 125) {
-    return 38;
-  } else if (v < 127) {
-    return 36;
-  } else if (v < 128) {
-    return 33;
-  } else if (v < 129) {
-    return 27;
-  } else if (v < 130) {
-    return 25;
-  } else if (v < 131) {
-    return 24;
-  } else if (v < 132) {
-    return 22;
-  } else if (v < 134) {
-    return 21;
-  } else if (v < 135) {
-    return 19;
-  } else if (v < 137) {
-    return 17;
-  } else if (v < 139) {
-    return 16;
-  } else if (v < 143) {
-    return 15;
-  } else if (v < 144) {
-    return 13;
-  } else if (v < 146) {
-    return 13;
-  } else if (v < 147) {
-    return 12;
-  } else if (v < 151) {
-    return 12;
-  } else if (v < 152) {
-    return 10;
-  } else if (v < 155) {
-    return 10;
-  } else if (v < 157) {
-    return 10;
-  } else if (v < 159) {
-    return 9;
-  } else if (v < 160) {
-    return 9;
-  } else if (v < 162) {
-    return 9;
-  } else if (v < 165) {
-    return 10;
-  } else if (v < 166) {
-    return 13;
-  } else if (v < 169) {
-    return 17;
-  } else if (v < 173) {
-    return 23;
-  } else if (v < 177) {
-    return 29;
-  } else if (v < 179) {
-    return 38;
-  } else if (v < 181) {
-    return 43;
-  } else if (v < 182) {
-    return 49;
-  } else if (v < 183) {
-    return 53;
-  } else if (v < 184) {
-    return 61;
-  } else if (v < 186) {
-    return 62;
-  } else if (v < 187) {
-    return 65;
-  } else if (v < 188) {
-    return 65;
-  } else if (v < 191) {
-    return 65;
-  } else if (v < 194) {
-    return 65;
-  } else if (v < 196) {
-    return 65;
-  } else if (v < 199) {
-    return 65;
-  } else if (v < 201) {
-    return 63;
-  } else if (v < 203) {
-    return 61;
-  } else if (v < 206) {
-    return 60;
-  } else if (v < 208) {
-    return 57;
-  } else if (v < 210) {
-    return 54;
-  } else if (v < 213) {
-    return 50;
-  } else if (v < 214) {
-    return 47;
-  } else if (v < 215) {
-    return 45;
-  } else if (v < 216) {
-    return 37;
-  } else if (v < 217) {
-    return 28;
-  } else if (v < 219) {
-    return 22;
-  } else if (v < 221) {
-    return 20;
-  } else if (v < 222) {
-    return 16;
-  } else if (v < 223) {
-    return 11;
-  } else if (v < 224) {
-    return 9;
-  } else if (v < 229) {
-    return 8;
-  } else if (v < 235) {
-    return 8;
-  } else if (v < 244) {
-    return 13;
-  } else if (v < 249) {
-    return 23;
-  } else if (v < 254) {
-    return 27;
-  } else if (v < 256) {
-    return 34;
-  } else if (v < 259) {
-    return 38;
-  } else if (v < 261) {
-    return 41;
-  } else if (v < 263) {
-    return 47;
-  } else if (v < 264) {
-    return 39;
-  } else if (v < 266) {
-    return 37;
-  } else if (v < 267) {
-    return 35;
-  } else if (v < 269) {
-    return 33;
-  } else if (v < 270) {
-    return 24;
-  } else if (v < 271) {
-    return 22;
-  } else if (v < 272) {
-    return 20;
-  } else if (v < 274) {
-    return 19;
-  } else if (v < 275) {
-    return 17;
-  } else if (v < 278) {
-    return 17;
-  } else if (v < 280) {
-    return 14;
-  } else if (v < 282) {
-    return 13;
-  } else if (v < 285) {
-    return 13;
-  } else if (v < 288) {
-    return 12;
-  } else if (v < 290) {
-    return 12;
-  } else if (v < 291) {
-    return 12;
-  } else if (v < 292) {
-    return 12;
-  } else if (v < 294) {
-    return 12;
-  } else if (v < 295) {
-    return 12;
-  } else if (v < 297) {
-    return 13;
-  } else if (v < 298) {
-    return 14;
-  } else if (v < 300) {
-    return 15;
-  } else if (v < 303) {
-    return 17;
-  } else if (v < 304) {
-    return 24;
-  } else if (v < 306) {
-    return 26;
-  } else if (v < 307) {
-    return 28;
-  } else if (v < 308) {
-    return 33;
-  } else if (v < 309) {
-    return 35;
-  } else if (v < 311) {
-    return 37;
-  } else if (v < 314) {
-    return 38;
-  } else if (v < 315) {
-    return 39;
-  } else if (v < 316) {
-    return 40;
-  } else if (v < 317) {
-    return 40;
-  } else if (v < 318) {
-    return 40;
-  } else if (v < 319) {
-    return 40;
-  } else if (v < 320) {
-    return 40;
-  } else if (v < 321) {
-    return 38;
-  } else if (v < 322) {
-    return 37;
-  } else if (v < 323) {
-    return 35;
-  } else if (v < 326) {
-    return 32;
-  } else if (v < 327) {
-    return 25;
-  } else if (v < 328) {
-    return 24;
-  } else if (v < 329) {
-    return 22;
-  } else if (v < 330) {
-    return 21;
-  } else if (v < 331) {
-    return 20;
-  } else if (v < 333) {
-    return 19;
-  } else if (v < 334) {
-    return 17;
-  } else if (v < 335) {
-    return 16;
-  } else if (v < 336) {
-    return 14;
-  } else if (v < 337) {
-    return 14;
-  } else if (v < 338) {
-    return 13;
-  } else if (v < 339) {
-    return 13;
-  } else if (v < 340) {
-    return 13;
-  } else if (v < 341) {
-    return 13;
-  } else if (v < 342) {
-    return 13;
-  } else if (v < 343) {
-    return 13;
-  } else if (v < 346) {
-    return 13;
-  } else if (v < 348) {
-    return 15;
-  } else if (v < 351) {
-    return 20;
-  } else if (v < 354) {
-    return 25;
-  } else if (v < 355) {
-    return 33;
-  } else if (v < 357) {
-    return 37;
-  } else if (v < 359) {
-    return 43;
-  } else if (v < 361) {
-    return 47;
-  } else if (v < 362) {
-    return 54;
-  } else if (v < 363) {
-    return 60;
-  } else if (v < 365) {
-    return 61;
-  } else if (v < 366) {
-    return 73;
-  } else if (v < 367) {
-    return 74;
-  } else if (v < 368) {
-    return 77;
-  } else if (v < 369) {
-    return 80;
-  } else if (v < 370) {
-    return 82;
-  } else if (v < 371) {
-    return 82;
-  } else if (v < 373) {
-    return 82;
-  } else if (v < 375) {
-    return 81;
-  } else if (v < 377) {
-    return 80;
-  } else if (v < 379) {
-    return 77;
-  } else if (v < 380) {
-    return 72;
-  } else if (v < 381) {
-    return 63;
-  } else if (v < 382) {
-    return 59;
-  } else if (v < 383) {
-    return 57;
-  } else if (v < 384) {
-    return 53;
-  } else if (v < 387) {
-    return 48;
-  } else if (v < 391) {
-    return 45;
-  } else if (v < 392) {
-    return 34;
-  } else if (v < 393) {
-    return 31;
-  } else if (v < 395) {
-    return 29;
-  } else if (v < 396) {
-    return 27;
-  } else if (v < 397) {
-    return 26;
-  } else if (v < 399) {
-    return 25;
-  } else if (v < 401) {
-    return 24;
-  } else if (v < 403) {
-    return 22;
-  } else if (v < 407) {
-    return 21;
-  } else if (v < 409) {
-    return 19;
-  } else if (v < 413) {
-    return 17;
-  } else if (v < 415) {
-    return 16;
-  } else if (v < 418) {
-    return 15;
-  } else if (v < 419) {
-    return 15;
-  } else if (v < 420) {
-    return 15;
-  } else if (v < 423) {
-    return 15;
-  } else if (v < 425) {
-    return 15;
-  } else if (v < 427) {
-    return 17;
-  } else if (v < 428) {
-    return 21;
-  } else if (v < 430) {
-    return 24;
-  } else if (v < 431) {
-    return 27;
-  } else if (v < 432) {
-    return 32;
-  } else if (v < 435) {
-    return 39;
-  } else if (v < 437) {
-    return 48;
-  } else if (v < 438) {
-    return 62;
-  } else if (v < 439) {
-    return 65;
-  } else if (v < 440) {
-    return 70;
-  } else if (v < 442) {
-    return 73;
-  } else if (v < 443) {
-    return 73;
-  } else if (v < 444) {
-    return 73;
-  } else if (v < 447) {
-    return 73;
-  } else if (v < 449) {
-    return 73;
-  } else if (v < 451) {
-    return 73;
-  } else if (v < 452) {
-    return 71;
-  } else if (v < 454) {
-    return 69;
-  } else if (v < 456) {
-    return 67;
-  } else if (v < 458) {
-    return 65;
-  } else if (v < 459) {
-    return 63;
-  } else if (v < 460) {
-    return 61;
-  } else if (v < 461) {
-    return 59;
-  } else if (v < 463) {
-    return 58;
-  } else if (v < 467) {
-    return 56;
-  } else if (v < 468) {
-    return 50;
-  } else if (v < 469) {
-    return 50;
-  } else if (v < 471) {
-    return 49;
-  } else if (v < 473) {
-    return 49;
-  } else if (v < 475) {
-    return 49;
-  } else if (v < 476) {
-    return 49;
-  } else if (v < 479) {
-    return 50;
-  } else if (v < 481) {
-    return 53;
-  } else if (v < 482) {
-    return 60;
-  } else if (v < 483) {
-    return 64;
-  } else if (v < 485) {
-    return 69;
-  } else if (v < 487) {
-    return 77;
-  } else if (v < 489) {
-    return 81;
-  } else if (v < 490) {
-    return 89;
-  } else if (v < 491) {
-    return 93;
-  } else if (v < 492) {
-    return 96;
-  }
-  return 96;
+	v=v/8;
+	if (v<2) { return 0; }
+	else if (v<3) { return  2; }
+	else if (v<4) { return  2; }
+	else if (v<5) { return  2; }
+	else if (v<6) { return  2; }
+	else if (v<7) { return  2; }
+	else if (v<10) { return  2; }
+	else if (v<11) { return  2; }
+	else if (v<12) { return  3; }
+	else if (v<14) { return  3; }
+	else if (v<18) { return  4; }
+	else if (v<20) { return  7; }
+	else if (v<24) { return  9; }
+	else if (v<27) { return  12; }
+	else if (v<32) { return  16; }
+	else if (v<35) { return  21; }
+	else if (v<37) { return  23; }
+	else if (v<40) { return  25; }
+	else if (v<43) { return  28; }
+	else if (v<44) { return  30; }
+	else if (v<46) { return  31; }
+	else if (v<47) { return  32; }
+	else if (v<48) { return  32; }
+	else if (v<50) { return  32; }
+	else if (v<51) { return  31; }
+	else if (v<54) { return  30; }
+	else if (v<55) { return  29; }
+	else if (v<57) { return  27; }
+	else if (v<59) { return  25; }
+	else if (v<61) { return  24; }
+	else if (v<63) { return  21; }
+	else if (v<64) { return  21; }
+	else if (v<66) { return  19; }
+	else if (v<67) { return  17; }
+	else if (v<68) { return  17; }
+	else if (v<69) { return  17; }
+	else if (v<70) { return  16; }
+	else if (v<71) { return  15; }
+	else if (v<72) { return  13; }
+	else if (v<73) { return  12; }
+	else if (v<74) { return  11; }
+	else if (v<75) { return  10; }
+	else if (v<77) { return  9; }
+	else if (v<79) { return  9; }
+	else if (v<80) { return  8; }
+	else if (v<81) { return  7; }
+	else if (v<83) { return  7; }
+	else if (v<85) { return  7; }
+	else if (v<86) { return  7; }
+	else if (v<87) { return  7; }
+	else if (v<89) { return  7; }
+	else if (v<91) { return  7; }
+	else if (v<98) { return  9; }
+	else if (v<101) { return  13; }
+	else if (v<105) { return  17; }
+	else if (v<108) { return  23; }
+	else if (v<111) { return  28; }
+	else if (v<114) { return  33; }
+	else if (v<115) { return  36; }
+	else if (v<116) { return  38; }
+	else if (v<117) { return  41; }
+	else if (v<119) { return  42; }
+	else if (v<123) { return  42; }
+	else if (v<124) { return  41; }
+	else if (v<125) { return  38; }
+	else if (v<127) { return  36; }
+	else if (v<128) { return  33; }
+	else if (v<129) { return  27; }
+	else if (v<130) { return  25; }
+	else if (v<131) { return  24; }
+	else if (v<132) { return  22; }
+	else if (v<134) { return  21; }
+	else if (v<135) { return  19; }
+	else if (v<137) { return  17; }
+	else if (v<139) { return  16; }
+	else if (v<143) { return  15; }
+	else if (v<144) { return  13; }
+	else if (v<146) { return  13; }
+	else if (v<147) { return  12; }
+	else if (v<151) { return  12; }
+	else if (v<152) { return  10; }
+	else if (v<155) { return  10; }
+	else if (v<157) { return  10; }
+	else if (v<159) { return  9; }
+	else if (v<160) { return  9; }
+	else if (v<162) { return  9; }
+	else if (v<165) { return  10; }
+	else if (v<166) { return  13; }
+	else if (v<169) { return  17; }
+	else if (v<173) { return  23; }
+	else if (v<177) { return  29; }
+	else if (v<179) { return  38; }
+	else if (v<181) { return  43; }
+	else if (v<182) { return  49; }
+	else if (v<183) { return  53; }
+	else if (v<184) { return  61; }
+	else if (v<186) { return  62; }
+	else if (v<187) { return  65; }
+	else if (v<188) { return  65; }
+	else if (v<191) { return  65; }
+	else if (v<194) { return  65; }
+	else if (v<196) { return  65; }
+	else if (v<199) { return  65; }
+	else if (v<201) { return  63; }
+	else if (v<203) { return  61; }
+	else if (v<206) { return  60; }
+	else if (v<208) { return  57; }
+	else if (v<210) { return  54; }
+	else if (v<213) { return  50; }
+	else if (v<214) { return  47; }
+	else if (v<215) { return  45; }
+	else if (v<216) { return  37; }
+	else if (v<217) { return  28; }
+	else if (v<219) { return  22; }
+	else if (v<221) { return  20; }
+	else if (v<222) { return  16; }
+	else if (v<223) { return  11; }
+	else if (v<224) { return  9; }
+	else if (v<229) { return  8; }
+	else if (v<235) { return  8; }
+	else if (v<244) { return  13; }
+	else if (v<249) { return  23; }
+	else if (v<254) { return  27; }
+	else if (v<256) { return  34; }
+	else if (v<259) { return  38; }
+	else if (v<261) { return  41; }
+	else if (v<263) { return  47; }
+	else if (v<264) { return  39; }
+	else if (v<266) { return  37; }
+	else if (v<267) { return  35; }
+	else if (v<269) { return  33; }
+	else if (v<270) { return  24; }
+	else if (v<271) { return  22; }
+	else if (v<272) { return  20; }
+	else if (v<274) { return  19; }
+	else if (v<275) { return  17; }
+	else if (v<278) { return  17; }
+	else if (v<280) { return  14; }
+	else if (v<282) { return  13; }
+	else if (v<285) { return  13; }
+	else if (v<288) { return  12; }
+	else if (v<290) { return  12; }
+	else if (v<291) { return  12; }
+	else if (v<292) { return  12; }
+	else if (v<294) { return  12; }
+	else if (v<295) { return  12; }
+	else if (v<297) { return  13; }
+	else if (v<298) { return  14; }
+	else if (v<300) { return  15; }
+	else if (v<303) { return  17; }
+	else if (v<304) { return  24; }
+	else if (v<306) { return  26; }
+	else if (v<307) { return  28; }
+	else if (v<308) { return  33; }
+	else if (v<309) { return  35; }
+	else if (v<311) { return  37; }
+	else if (v<314) { return  38; }
+	else if (v<315) { return  39; }
+	else if (v<316) { return  40; }
+	else if (v<317) { return  40; }
+	else if (v<318) { return  40; }
+	else if (v<319) { return  40; }
+	else if (v<320) { return  40; }
+	else if (v<321) { return  38; }
+	else if (v<322) { return  37; }
+	else if (v<323) { return  35; }
+	else if (v<326) { return  32; }
+	else if (v<327) { return  25; }
+	else if (v<328) { return  24; }
+	else if (v<329) { return  22; }
+	else if (v<330) { return  21; }
+	else if (v<331) { return  20; }
+	else if (v<333) { return  19; }
+	else if (v<334) { return  17; }
+	else if (v<335) { return  16; }
+	else if (v<336) { return  14; }
+	else if (v<337) { return  14; }
+	else if (v<338) { return  13; }
+	else if (v<339) { return  13; }
+	else if (v<340) { return  13; }
+	else if (v<341) { return  13; }
+	else if (v<342) { return  13; }
+	else if (v<343) { return  13; }
+	else if (v<346) { return  13; }
+	else if (v<348) { return  15; }
+	else if (v<351) { return  20; }
+	else if (v<354) { return  25; }
+	else if (v<355) { return  33; }
+	else if (v<357) { return  37; }
+	else if (v<359) { return  43; }
+	else if (v<361) { return  47; }
+	else if (v<362) { return  54; }
+	else if (v<363) { return  60; }
+	else if (v<365) { return  61; }
+	else if (v<366) { return  73; }
+	else if (v<367) { return  74; }
+	else if (v<368) { return  77; }
+	else if (v<369) { return  80; }
+	else if (v<370) { return  82; }
+	else if (v<371) { return  82; }
+	else if (v<373) { return  82; }
+	else if (v<375) { return  81; }
+	else if (v<377) { return  80; }
+	else if (v<379) { return  77; }
+	else if (v<380) { return  72; }
+	else if (v<381) { return  63; }
+	else if (v<382) { return  59; }
+	else if (v<383) { return  57; }
+	else if (v<384) { return  53; }
+	else if (v<387) { return  48; }
+	else if (v<391) { return  45; }
+	else if (v<392) { return  34; }
+	else if (v<393) { return  31; }
+	else if (v<395) { return  29; }
+	else if (v<396) { return  27; }
+	else if (v<397) { return  26; }
+	else if (v<399) { return  25; }
+	else if (v<401) { return  24; }
+	else if (v<403) { return  22; }
+	else if (v<407) { return  21; }
+	else if (v<409) { return  19; }
+	else if (v<413) { return  17; }
+	else if (v<415) { return  16; }
+	else if (v<418) { return  15; }
+	else if (v<419) { return  15; }
+	else if (v<420) { return  15; }
+	else if (v<423) { return  15; }
+	else if (v<425) { return  15; }
+	else if (v<427) { return  17; }
+	else if (v<428) { return  21; }
+	else if (v<430) { return  24; }
+	else if (v<431) { return  27; }
+	else if (v<432) { return  32; }
+	else if (v<435) { return  39; }
+	else if (v<437) { return  48; }
+	else if (v<438) { return  62; }
+	else if (v<439) { return  65; }
+	else if (v<440) { return  70; }
+	else if (v<442) { return  73; }
+	else if (v<443) { return  73; }
+	else if (v<444) { return  73; }
+	else if (v<447) { return  73; }
+	else if (v<449) { return  73; }
+	else if (v<451) { return  73; }
+	else if (v<452) { return  71; }
+	else if (v<454) { return  69; }
+	else if (v<456) { return  67; }
+	else if (v<458) { return  65; }
+	else if (v<459) { return  63; }
+	else if (v<460) { return  61; }
+	else if (v<461) { return  59; }
+	else if (v<463) { return  58; }
+	else if (v<467) { return  56; }
+	else if (v<468) { return  50; }
+	else if (v<469) { return  50; }
+	else if (v<471) { return  49; }
+	else if (v<473) { return  49; }
+	else if (v<475) { return  49; }
+	else if (v<476) { return  49; }
+	else if (v<479) { return  50; }
+	else if (v<481) { return  53; }
+	else if (v<482) { return  60; }
+	else if (v<483) { return  64; }
+	else if (v<485) { return  69; }
+	else if (v<487) { return  77; }
+	else if (v<489) { return  81; }
+	else if (v<490) { return  89; }
+	else if (v<491) { return  93; }
+	else if (v<492) { return  96; }
+	 return 96;
 }
 uint8_t ease_probability_gate(uint16_t v) {
-  v = v / 8;
-  if (v < 3) {
-    return 0;
-  } else if (v < 6) {
-    return 5;
-  } else if (v < 9) {
-    return 9;
-  } else if (v < 10) {
-    return 13;
-  } else if (v < 11) {
-    return 15;
-  } else if (v < 12) {
-    return 17;
-  } else if (v < 14) {
-    return 17;
-  } else if (v < 16) {
-    return 17;
-  } else if (v < 17) {
-    return 18;
-  } else if (v < 18) {
-    return 19;
-  } else if (v < 19) {
-    return 19;
-  } else if (v < 20) {
-    return 19;
-  } else if (v < 22) {
-    return 20;
-  } else if (v < 23) {
-    return 20;
-  } else if (v < 25) {
-    return 20;
-  } else if (v < 27) {
-    return 20;
-  } else if (v < 31) {
-    return 20;
-  } else if (v < 33) {
-    return 19;
-  } else if (v < 34) {
-    return 18;
-  } else if (v < 35) {
-    return 17;
-  } else if (v < 36) {
-    return 17;
-  } else if (v < 38) {
-    return 16;
-  } else if (v < 39) {
-    return 16;
-  } else if (v < 40) {
-    return 15;
-  } else if (v < 41) {
-    return 14;
-  } else if (v < 42) {
-    return 14;
-  } else if (v < 43) {
-    return 13;
-  } else if (v < 44) {
-    return 13;
-  } else if (v < 45) {
-    return 13;
-  } else if (v < 46) {
-    return 12;
-  } else if (v < 47) {
-    return 11;
-  } else if (v < 48) {
-    return 11;
-  } else if (v < 51) {
-    return 10;
-  } else if (v < 52) {
-    return 9;
-  } else if (v < 54) {
-    return 9;
-  } else if (v < 55) {
-    return 9;
-  } else if (v < 57) {
-    return 8;
-  } else if (v < 59) {
-    return 7;
-  } else if (v < 60) {
-    return 6;
-  } else if (v < 62) {
-    return 6;
-  } else if (v < 63) {
-    return 5;
-  } else if (v < 64) {
-    return 5;
-  } else if (v < 66) {
-    return 5;
-  } else if (v < 67) {
-    return 5;
-  } else if (v < 69) {
-    return 5;
-  } else if (v < 70) {
-    return 5;
-  } else if (v < 71) {
-    return 5;
-  } else if (v < 73) {
-    return 5;
-  } else if (v < 75) {
-    return 5;
-  } else if (v < 76) {
-    return 5;
-  } else if (v < 77) {
-    return 5;
-  } else if (v < 80) {
-    return 5;
-  } else if (v < 83) {
-    return 5;
-  } else if (v < 85) {
-    return 5;
-  } else if (v < 87) {
-    return 5;
-  } else if (v < 90) {
-    return 5;
-  } else if (v < 92) {
-    return 6;
-  } else if (v < 98) {
-    return 7;
-  } else if (v < 99) {
-    return 9;
-  } else if (v < 100) {
-    return 9;
-  } else if (v < 101) {
-    return 10;
-  } else if (v < 103) {
-    return 12;
-  } else if (v < 104) {
-    return 13;
-  } else if (v < 107) {
-    return 15;
-  } else if (v < 108) {
-    return 18;
-  } else if (v < 109) {
-    return 20;
-  } else if (v < 110) {
-    return 21;
-  } else if (v < 111) {
-    return 22;
-  } else if (v < 112) {
-    return 24;
-  } else if (v < 115) {
-    return 25;
-  } else if (v < 116) {
-    return 30;
-  } else if (v < 118) {
-    return 33;
-  } else if (v < 120) {
-    return 34;
-  } else if (v < 122) {
-    return 37;
-  } else if (v < 124) {
-    return 39;
-  } else if (v < 127) {
-    return 42;
-  } else if (v < 128) {
-    return 46;
-  } else if (v < 131) {
-    return 49;
-  } else if (v < 135) {
-    return 50;
-  } else if (v < 136) {
-    return 54;
-  } else if (v < 137) {
-    return 55;
-  } else if (v < 139) {
-    return 56;
-  } else if (v < 142) {
-    return 57;
-  } else if (v < 143) {
-    return 57;
-  } else if (v < 145) {
-    return 58;
-  } else if (v < 146) {
-    return 59;
-  } else if (v < 148) {
-    return 59;
-  } else if (v < 150) {
-    return 61;
-  } else if (v < 154) {
-    return 61;
-  } else if (v < 156) {
-    return 62;
-  } else if (v < 158) {
-    return 62;
-  } else if (v < 160) {
-    return 62;
-  } else if (v < 162) {
-    return 62;
-  } else if (v < 165) {
-    return 62;
-  } else if (v < 168) {
-    return 62;
-  } else if (v < 173) {
-    return 61;
-  } else if (v < 176) {
-    return 59;
-  } else if (v < 179) {
-    return 57;
-  } else if (v < 183) {
-    return 56;
-  } else if (v < 184) {
-    return 54;
-  } else if (v < 187) {
-    return 53;
-  } else if (v < 189) {
-    return 50;
-  } else if (v < 192) {
-    return 48;
-  } else if (v < 194) {
-    return 44;
-  } else if (v < 196) {
-    return 42;
-  } else if (v < 198) {
-    return 41;
-  } else if (v < 203) {
-    return 39;
-  } else if (v < 206) {
-    return 34;
-  } else if (v < 207) {
-    return 33;
-  } else if (v < 210) {
-    return 31;
-  } else if (v < 211) {
-    return 29;
-  } else if (v < 212) {
-    return 28;
-  } else if (v < 214) {
-    return 26;
-  } else if (v < 217) {
-    return 25;
-  } else if (v < 219) {
-    return 22;
-  } else if (v < 222) {
-    return 21;
-  } else if (v < 223) {
-    return 19;
-  } else if (v < 226) {
-    return 18;
-  } else if (v < 227) {
-    return 17;
-  } else if (v < 230) {
-    return 16;
-  } else if (v < 231) {
-    return 15;
-  } else if (v < 232) {
-    return 14;
-  } else if (v < 234) {
-    return 13;
-  } else if (v < 236) {
-    return 12;
-  } else if (v < 238) {
-    return 11;
-  } else if (v < 239) {
-    return 10;
-  } else if (v < 240) {
-    return 9;
-  } else if (v < 242) {
-    return 9;
-  } else if (v < 243) {
-    return 9;
-  } else if (v < 246) {
-    return 9;
-  } else if (v < 247) {
-    return 7;
-  } else if (v < 248) {
-    return 7;
-  } else if (v < 249) {
-    return 7;
-  } else if (v < 251) {
-    return 7;
-  } else if (v < 255) {
-    return 7;
-  } else if (v < 257) {
-    return 7;
-  } else if (v < 260) {
-    return 7;
-  } else if (v < 261) {
-    return 8;
-  } else if (v < 262) {
-    return 9;
-  } else if (v < 263) {
-    return 9;
-  } else if (v < 264) {
-    return 9;
-  } else if (v < 265) {
-    return 11;
-  } else if (v < 266) {
-    return 12;
-  } else if (v < 267) {
-    return 15;
-  } else if (v < 269) {
-    return 17;
-  } else if (v < 270) {
-    return 20;
-  } else if (v < 271) {
-    return 22;
-  } else if (v < 272) {
-    return 24;
-  } else if (v < 273) {
-    return 26;
-  } else if (v < 274) {
-    return 29;
-  } else if (v < 275) {
-    return 30;
-  } else if (v < 277) {
-    return 31;
-  } else if (v < 279) {
-    return 33;
-  } else if (v < 280) {
-    return 37;
-  } else if (v < 282) {
-    return 41;
-  } else if (v < 283) {
-    return 43;
-  } else if (v < 286) {
-    return 45;
-  } else if (v < 287) {
-    return 51;
-  } else if (v < 288) {
-    return 53;
-  } else if (v < 290) {
-    return 55;
-  } else if (v < 291) {
-    return 58;
-  } else if (v < 293) {
-    return 63;
-  } else if (v < 294) {
-    return 65;
-  } else if (v < 295) {
-    return 66;
-  } else if (v < 296) {
-    return 68;
-  } else if (v < 297) {
-    return 71;
-  } else if (v < 298) {
-    return 73;
-  } else if (v < 299) {
-    return 74;
-  } else if (v < 300) {
-    return 76;
-  } else if (v < 301) {
-    return 77;
-  } else if (v < 302) {
-    return 77;
-  } else if (v < 303) {
-    return 79;
-  } else if (v < 306) {
-    return 82;
-  } else if (v < 307) {
-    return 85;
-  } else if (v < 309) {
-    return 85;
-  } else if (v < 311) {
-    return 88;
-  } else if (v < 313) {
-    return 90;
-  } else if (v < 315) {
-    return 92;
-  } else if (v < 321) {
-    return 93;
-  } else if (v < 322) {
-    return 98;
-  } else if (v < 323) {
-    return 99;
-  } else if (v < 324) {
-    return 101;
-  } else if (v < 325) {
-    return 102;
-  } else if (v < 327) {
-    return 102;
-  } else if (v < 328) {
-    return 104;
-  } else if (v < 330) {
-    return 106;
-  } else if (v < 332) {
-    return 109;
-  } else if (v < 335) {
-    return 111;
-  } else if (v < 336) {
-    return 113;
-  } else if (v < 339) {
-    return 114;
-  } else if (v < 341) {
-    return 115;
-  } else if (v < 343) {
-    return 116;
-  } else if (v < 345) {
-    return 116;
-  } else if (v < 347) {
-    return 116;
-  } else if (v < 349) {
-    return 116;
-  } else if (v < 351) {
-    return 116;
-  } else if (v < 355) {
-    return 114;
-  } else if (v < 357) {
-    return 113;
-  } else if (v < 359) {
-    return 111;
-  } else if (v < 361) {
-    return 109;
-  } else if (v < 363) {
-    return 108;
-  } else if (v < 365) {
-    return 105;
-  } else if (v < 367) {
-    return 102;
-  } else if (v < 368) {
-    return 100;
-  } else if (v < 370) {
-    return 97;
-  } else if (v < 372) {
-    return 95;
-  } else if (v < 374) {
-    return 91;
-  } else if (v < 381) {
-    return 88;
-  } else if (v < 383) {
-    return 77;
-  } else if (v < 385) {
-    return 71;
-  } else if (v < 389) {
-    return 67;
-  } else if (v < 390) {
-    return 62;
-  } else if (v < 395) {
-    return 61;
-  } else if (v < 398) {
-    return 53;
-  } else if (v < 399) {
-    return 47;
-  } else if (v < 400) {
-    return 45;
-  } else if (v < 401) {
-    return 42;
-  } else if (v < 403) {
-    return 41;
-  } else if (v < 405) {
-    return 38;
-  } else if (v < 407) {
-    return 33;
-  } else if (v < 408) {
-    return 31;
-  } else if (v < 409) {
-    return 27;
-  } else if (v < 410) {
-    return 25;
-  } else if (v < 411) {
-    return 24;
-  } else if (v < 413) {
-    return 22;
-  } else if (v < 414) {
-    return 20;
-  } else if (v < 415) {
-    return 19;
-  } else if (v < 416) {
-    return 17;
-  } else if (v < 423) {
-    return 17;
-  } else if (v < 424) {
-    return 11;
-  } else if (v < 425) {
-    return 11;
-  } else if (v < 427) {
-    return 11;
-  } else if (v < 431) {
-    return 11;
-  } else if (v < 433) {
-    return 11;
-  } else if (v < 434) {
-    return 12;
-  } else if (v < 435) {
-    return 13;
-  } else if (v < 438) {
-    return 13;
-  } else if (v < 441) {
-    return 17;
-  } else if (v < 443) {
-    return 21;
-  } else if (v < 446) {
-    return 22;
-  } else if (v < 447) {
-    return 23;
-  } else if (v < 448) {
-    return 24;
-  } else if (v < 450) {
-    return 24;
-  } else if (v < 451) {
-    return 24;
-  } else if (v < 454) {
-    return 25;
-  } else if (v < 455) {
-    return 25;
-  } else if (v < 459) {
-    return 25;
-  } else if (v < 461) {
-    return 24;
-  } else if (v < 462) {
-    return 24;
-  } else if (v < 471) {
-    return 24;
-  } else if (v < 473) {
-    return 20;
-  } else if (v < 475) {
-    return 19;
-  } else if (v < 478) {
-    return 19;
-  } else if (v < 481) {
-    return 18;
-  } else if (v < 483) {
-    return 17;
-  } else if (v < 484) {
-    return 17;
-  } else if (v < 485) {
-    return 16;
-  } else if (v < 487) {
-    return 16;
-  } else if (v < 490) {
-    return 15;
-  } else if (v < 491) {
-    return 14;
-  } else if (v < 495) {
-    return 13;
-  } else if (v < 497) {
-    return 13;
-  } else if (v < 499) {
-    return 12;
-  } else if (v < 500) {
-    return 10;
-  } else if (v < 502) {
-    return 10;
-  } else if (v < 504) {
-    return 10;
-  } else if (v < 505) {
-    return 9;
-  } else if (v < 506) {
-    return 9;
-  } else if (v < 507) {
-    return 9;
-  } else if (v < 511) {
-    return 8;
-  } else if (v < 512) {
-    return 8;
-  } else if (v < 513) {
-    return 7;
-  } else if (v < 515) {
-    return 7;
-  } else if (v < 523) {
-    return 6;
-  } else if (v < 524) {
-    return 2;
-  } else if (v < 525) {
-    return 1;
-  } else if (v < 526) {
-    return 1;
-  }
-  return 1;
+	v=v/8;
+	if (v<3) { return 0; }
+	else if (v<6) { return  5; }
+	else if (v<9) { return  9; }
+	else if (v<10) { return  13; }
+	else if (v<11) { return  15; }
+	else if (v<12) { return  17; }
+	else if (v<14) { return  17; }
+	else if (v<16) { return  17; }
+	else if (v<17) { return  18; }
+	else if (v<18) { return  19; }
+	else if (v<19) { return  19; }
+	else if (v<20) { return  19; }
+	else if (v<22) { return  20; }
+	else if (v<23) { return  20; }
+	else if (v<25) { return  20; }
+	else if (v<27) { return  20; }
+	else if (v<31) { return  20; }
+	else if (v<33) { return  19; }
+	else if (v<34) { return  18; }
+	else if (v<35) { return  17; }
+	else if (v<36) { return  17; }
+	else if (v<38) { return  16; }
+	else if (v<39) { return  16; }
+	else if (v<40) { return  15; }
+	else if (v<41) { return  14; }
+	else if (v<42) { return  14; }
+	else if (v<43) { return  13; }
+	else if (v<44) { return  13; }
+	else if (v<45) { return  13; }
+	else if (v<46) { return  12; }
+	else if (v<47) { return  11; }
+	else if (v<48) { return  11; }
+	else if (v<51) { return  10; }
+	else if (v<52) { return  9; }
+	else if (v<54) { return  9; }
+	else if (v<55) { return  9; }
+	else if (v<57) { return  8; }
+	else if (v<59) { return  7; }
+	else if (v<60) { return  6; }
+	else if (v<62) { return  6; }
+	else if (v<63) { return  5; }
+	else if (v<64) { return  5; }
+	else if (v<66) { return  5; }
+	else if (v<67) { return  5; }
+	else if (v<69) { return  5; }
+	else if (v<70) { return  5; }
+	else if (v<71) { return  5; }
+	else if (v<73) { return  5; }
+	else if (v<75) { return  5; }
+	else if (v<76) { return  5; }
+	else if (v<77) { return  5; }
+	else if (v<80) { return  5; }
+	else if (v<83) { return  5; }
+	else if (v<85) { return  5; }
+	else if (v<87) { return  5; }
+	else if (v<90) { return  5; }
+	else if (v<92) { return  6; }
+	else if (v<98) { return  7; }
+	else if (v<99) { return  9; }
+	else if (v<100) { return  9; }
+	else if (v<101) { return  10; }
+	else if (v<103) { return  12; }
+	else if (v<104) { return  13; }
+	else if (v<107) { return  15; }
+	else if (v<108) { return  18; }
+	else if (v<109) { return  20; }
+	else if (v<110) { return  21; }
+	else if (v<111) { return  22; }
+	else if (v<112) { return  24; }
+	else if (v<115) { return  25; }
+	else if (v<116) { return  30; }
+	else if (v<118) { return  33; }
+	else if (v<120) { return  34; }
+	else if (v<122) { return  37; }
+	else if (v<124) { return  39; }
+	else if (v<127) { return  42; }
+	else if (v<128) { return  46; }
+	else if (v<131) { return  49; }
+	else if (v<135) { return  50; }
+	else if (v<136) { return  54; }
+	else if (v<137) { return  55; }
+	else if (v<139) { return  56; }
+	else if (v<142) { return  57; }
+	else if (v<143) { return  57; }
+	else if (v<145) { return  58; }
+	else if (v<146) { return  59; }
+	else if (v<148) { return  59; }
+	else if (v<150) { return  61; }
+	else if (v<154) { return  61; }
+	else if (v<156) { return  62; }
+	else if (v<158) { return  62; }
+	else if (v<160) { return  62; }
+	else if (v<162) { return  62; }
+	else if (v<165) { return  62; }
+	else if (v<168) { return  62; }
+	else if (v<173) { return  61; }
+	else if (v<176) { return  59; }
+	else if (v<179) { return  57; }
+	else if (v<183) { return  56; }
+	else if (v<184) { return  54; }
+	else if (v<187) { return  53; }
+	else if (v<189) { return  50; }
+	else if (v<192) { return  48; }
+	else if (v<194) { return  44; }
+	else if (v<196) { return  42; }
+	else if (v<198) { return  41; }
+	else if (v<203) { return  39; }
+	else if (v<206) { return  34; }
+	else if (v<207) { return  33; }
+	else if (v<210) { return  31; }
+	else if (v<211) { return  29; }
+	else if (v<212) { return  28; }
+	else if (v<214) { return  26; }
+	else if (v<217) { return  25; }
+	else if (v<219) { return  22; }
+	else if (v<222) { return  21; }
+	else if (v<223) { return  19; }
+	else if (v<226) { return  18; }
+	else if (v<227) { return  17; }
+	else if (v<230) { return  16; }
+	else if (v<231) { return  15; }
+	else if (v<232) { return  14; }
+	else if (v<234) { return  13; }
+	else if (v<236) { return  12; }
+	else if (v<238) { return  11; }
+	else if (v<239) { return  10; }
+	else if (v<240) { return  9; }
+	else if (v<242) { return  9; }
+	else if (v<243) { return  9; }
+	else if (v<246) { return  9; }
+	else if (v<247) { return  7; }
+	else if (v<248) { return  7; }
+	else if (v<249) { return  7; }
+	else if (v<251) { return  7; }
+	else if (v<255) { return  7; }
+	else if (v<257) { return  7; }
+	else if (v<260) { return  7; }
+	else if (v<261) { return  8; }
+	else if (v<262) { return  9; }
+	else if (v<263) { return  9; }
+	else if (v<264) { return  9; }
+	else if (v<265) { return  11; }
+	else if (v<266) { return  12; }
+	else if (v<267) { return  15; }
+	else if (v<269) { return  17; }
+	else if (v<270) { return  20; }
+	else if (v<271) { return  22; }
+	else if (v<272) { return  24; }
+	else if (v<273) { return  26; }
+	else if (v<274) { return  29; }
+	else if (v<275) { return  30; }
+	else if (v<277) { return  31; }
+	else if (v<279) { return  33; }
+	else if (v<280) { return  37; }
+	else if (v<282) { return  41; }
+	else if (v<283) { return  43; }
+	else if (v<286) { return  45; }
+	else if (v<287) { return  51; }
+	else if (v<288) { return  53; }
+	else if (v<290) { return  55; }
+	else if (v<291) { return  58; }
+	else if (v<293) { return  63; }
+	else if (v<294) { return  65; }
+	else if (v<295) { return  66; }
+	else if (v<296) { return  68; }
+	else if (v<297) { return  71; }
+	else if (v<298) { return  73; }
+	else if (v<299) { return  74; }
+	else if (v<300) { return  76; }
+	else if (v<301) { return  77; }
+	else if (v<302) { return  77; }
+	else if (v<303) { return  79; }
+	else if (v<306) { return  82; }
+	else if (v<307) { return  85; }
+	else if (v<309) { return  85; }
+	else if (v<311) { return  88; }
+	else if (v<313) { return  90; }
+	else if (v<315) { return  92; }
+	else if (v<321) { return  93; }
+	else if (v<322) { return  98; }
+	else if (v<323) { return  99; }
+	else if (v<324) { return  101; }
+	else if (v<325) { return  102; }
+	else if (v<327) { return  102; }
+	else if (v<328) { return  104; }
+	else if (v<330) { return  106; }
+	else if (v<332) { return  109; }
+	else if (v<335) { return  111; }
+	else if (v<336) { return  113; }
+	else if (v<339) { return  114; }
+	else if (v<341) { return  115; }
+	else if (v<343) { return  116; }
+	else if (v<345) { return  116; }
+	else if (v<347) { return  116; }
+	else if (v<349) { return  116; }
+	else if (v<351) { return  116; }
+	else if (v<355) { return  114; }
+	else if (v<357) { return  113; }
+	else if (v<359) { return  111; }
+	else if (v<361) { return  109; }
+	else if (v<363) { return  108; }
+	else if (v<365) { return  105; }
+	else if (v<367) { return  102; }
+	else if (v<368) { return  100; }
+	else if (v<370) { return  97; }
+	else if (v<372) { return  95; }
+	else if (v<374) { return  91; }
+	else if (v<381) { return  88; }
+	else if (v<383) { return  77; }
+	else if (v<385) { return  71; }
+	else if (v<389) { return  67; }
+	else if (v<390) { return  62; }
+	else if (v<395) { return  61; }
+	else if (v<398) { return  53; }
+	else if (v<399) { return  47; }
+	else if (v<400) { return  45; }
+	else if (v<401) { return  42; }
+	else if (v<403) { return  41; }
+	else if (v<405) { return  38; }
+	else if (v<407) { return  33; }
+	else if (v<408) { return  31; }
+	else if (v<409) { return  27; }
+	else if (v<410) { return  25; }
+	else if (v<411) { return  24; }
+	else if (v<413) { return  22; }
+	else if (v<414) { return  20; }
+	else if (v<415) { return  19; }
+	else if (v<416) { return  17; }
+	else if (v<423) { return  17; }
+	else if (v<424) { return  11; }
+	else if (v<425) { return  11; }
+	else if (v<427) { return  11; }
+	else if (v<431) { return  11; }
+	else if (v<433) { return  11; }
+	else if (v<434) { return  12; }
+	else if (v<435) { return  13; }
+	else if (v<438) { return  13; }
+	else if (v<441) { return  17; }
+	else if (v<443) { return  21; }
+	else if (v<446) { return  22; }
+	else if (v<447) { return  23; }
+	else if (v<448) { return  24; }
+	else if (v<450) { return  24; }
+	else if (v<451) { return  24; }
+	else if (v<454) { return  25; }
+	else if (v<455) { return  25; }
+	else if (v<459) { return  25; }
+	else if (v<461) { return  24; }
+	else if (v<462) { return  24; }
+	else if (v<471) { return  24; }
+	else if (v<473) { return  20; }
+	else if (v<475) { return  19; }
+	else if (v<478) { return  19; }
+	else if (v<481) { return  18; }
+	else if (v<483) { return  17; }
+	else if (v<484) { return  17; }
+	else if (v<485) { return  16; }
+	else if (v<487) { return  16; }
+	else if (v<490) { return  15; }
+	else if (v<491) { return  14; }
+	else if (v<495) { return  13; }
+	else if (v<497) { return  13; }
+	else if (v<499) { return  12; }
+	else if (v<500) { return  10; }
+	else if (v<502) { return  10; }
+	else if (v<504) { return  10; }
+	else if (v<505) { return  9; }
+	else if (v<506) { return  9; }
+	else if (v<507) { return  9; }
+	else if (v<511) { return  8; }
+	else if (v<512) { return  8; }
+	else if (v<513) { return  7; }
+	else if (v<515) { return  7; }
+	else if (v<523) { return  6; }
+	else if (v<524) { return  2; }
+	else if (v<525) { return  1; }
+	else if (v<526) { return  1; }
+	 return 1;
 }
 uint8_t ease_probability_jump(uint16_t v) {
-  v = v / 8;
-  if (v < 5) {
-    return 0;
-  } else if (v < 6) {
-    return 1;
-  } else if (v < 7) {
-    return 1;
-  } else if (v < 8) {
-    return 3;
-  } else if (v < 11) {
-    return 5;
-  } else if (v < 12) {
-    return 6;
-  } else if (v < 13) {
-    return 7;
-  } else if (v < 14) {
-    return 9;
-  } else if (v < 15) {
-    return 9;
-  } else if (v < 20) {
-    return 9;
-  } else if (v < 22) {
-    return 11;
-  } else if (v < 23) {
-    return 11;
-  } else if (v < 24) {
-    return 12;
-  } else if (v < 26) {
-    return 13;
-  } else if (v < 28) {
-    return 13;
-  } else if (v < 30) {
-    return 13;
-  } else if (v < 31) {
-    return 13;
-  } else if (v < 32) {
-    return 13;
-  } else if (v < 33) {
-    return 12;
-  } else if (v < 35) {
-    return 12;
-  } else if (v < 36) {
-    return 12;
-  } else if (v < 38) {
-    return 12;
-  } else if (v < 39) {
-    return 11;
-  } else if (v < 40) {
-    return 10;
-  } else if (v < 42) {
-    return 10;
-  } else if (v < 43) {
-    return 10;
-  } else if (v < 45) {
-    return 9;
-  } else if (v < 47) {
-    return 9;
-  } else if (v < 48) {
-    return 9;
-  } else if (v < 49) {
-    return 9;
-  } else if (v < 51) {
-    return 8;
-  } else if (v < 52) {
-    return 8;
-  } else if (v < 54) {
-    return 8;
-  } else if (v < 55) {
-    return 8;
-  } else if (v < 56) {
-    return 8;
-  } else if (v < 57) {
-    return 8;
-  } else if (v < 59) {
-    return 8;
-  } else if (v < 60) {
-    return 8;
-  } else if (v < 63) {
-    return 8;
-  } else if (v < 67) {
-    return 9;
-  } else if (v < 70) {
-    return 13;
-  } else if (v < 71) {
-    return 14;
-  } else if (v < 72) {
-    return 16;
-  } else if (v < 73) {
-    return 17;
-  } else if (v < 74) {
-    return 18;
-  } else if (v < 75) {
-    return 19;
-  } else if (v < 76) {
-    return 20;
-  } else if (v < 77) {
-    return 22;
-  } else if (v < 78) {
-    return 25;
-  } else if (v < 79) {
-    return 26;
-  } else if (v < 80) {
-    return 28;
-  } else if (v < 81) {
-    return 31;
-  } else if (v < 82) {
-    return 33;
-  } else if (v < 83) {
-    return 35;
-  } else if (v < 85) {
-    return 37;
-  } else if (v < 86) {
-    return 40;
-  } else if (v < 87) {
-    return 41;
-  } else if (v < 88) {
-    return 41;
-  } else if (v < 89) {
-    return 43;
-  } else if (v < 90) {
-    return 44;
-  } else if (v < 91) {
-    return 45;
-  } else if (v < 92) {
-    return 45;
-  } else if (v < 94) {
-    return 45;
-  } else if (v < 95) {
-    return 45;
-  } else if (v < 96) {
-    return 45;
-  } else if (v < 98) {
-    return 45;
-  } else if (v < 99) {
-    return 45;
-  } else if (v < 101) {
-    return 44;
-  } else if (v < 102) {
-    return 42;
-  } else if (v < 103) {
-    return 41;
-  } else if (v < 104) {
-    return 41;
-  } else if (v < 105) {
-    return 40;
-  } else if (v < 107) {
-    return 40;
-  } else if (v < 111) {
-    return 39;
-  } else if (v < 112) {
-    return 38;
-  } else if (v < 114) {
-    return 37;
-  } else if (v < 115) {
-    return 36;
-  } else if (v < 117) {
-    return 35;
-  } else if (v < 119) {
-    return 34;
-  } else if (v < 121) {
-    return 33;
-  } else if (v < 123) {
-    return 33;
-  } else if (v < 124) {
-    return 32;
-  } else if (v < 125) {
-    return 31;
-  } else if (v < 127) {
-    return 31;
-  } else if (v < 130) {
-    return 30;
-  } else if (v < 131) {
-    return 30;
-  } else if (v < 134) {
-    return 29;
-  } else if (v < 135) {
-    return 29;
-  } else if (v < 137) {
-    return 29;
-  } else if (v < 139) {
-    return 29;
-  } else if (v < 141) {
-    return 29;
-  } else if (v < 145) {
-    return 29;
-  } else if (v < 149) {
-    return 32;
-  } else if (v < 151) {
-    return 35;
-  } else if (v < 155) {
-    return 37;
-  } else if (v < 157) {
-    return 42;
-  } else if (v < 159) {
-    return 48;
-  } else if (v < 160) {
-    return 51;
-  } else if (v < 161) {
-    return 57;
-  } else if (v < 162) {
-    return 58;
-  } else if (v < 163) {
-    return 60;
-  } else if (v < 164) {
-    return 62;
-  } else if (v < 165) {
-    return 65;
-  } else if (v < 166) {
-    return 65;
-  } else if (v < 167) {
-    return 65;
-  } else if (v < 168) {
-    return 65;
-  } else if (v < 170) {
-    return 65;
-  } else if (v < 171) {
-    return 65;
-  } else if (v < 175) {
-    return 65;
-  } else if (v < 176) {
-    return 62;
-  } else if (v < 177) {
-    return 60;
-  } else if (v < 179) {
-    return 59;
-  } else if (v < 180) {
-    return 58;
-  } else if (v < 182) {
-    return 55;
-  } else if (v < 183) {
-    return 53;
-  } else if (v < 186) {
-    return 52;
-  } else if (v < 187) {
-    return 48;
-  } else if (v < 188) {
-    return 46;
-  } else if (v < 191) {
-    return 45;
-  } else if (v < 192) {
-    return 42;
-  } else if (v < 193) {
-    return 40;
-  } else if (v < 195) {
-    return 40;
-  } else if (v < 197) {
-    return 38;
-  } else if (v < 199) {
-    return 37;
-  } else if (v < 202) {
-    return 36;
-  } else if (v < 203) {
-    return 33;
-  } else if (v < 205) {
-    return 32;
-  } else if (v < 207) {
-    return 30;
-  } else if (v < 209) {
-    return 30;
-  } else if (v < 211) {
-    return 29;
-  } else if (v < 212) {
-    return 27;
-  } else if (v < 215) {
-    return 26;
-  } else if (v < 217) {
-    return 25;
-  } else if (v < 219) {
-    return 25;
-  } else if (v < 221) {
-    return 25;
-  } else if (v < 223) {
-    return 24;
-  } else if (v < 224) {
-    return 23;
-  } else if (v < 225) {
-    return 23;
-  } else if (v < 226) {
-    return 23;
-  } else if (v < 227) {
-    return 23;
-  } else if (v < 229) {
-    return 23;
-  } else if (v < 231) {
-    return 23;
-  } else if (v < 234) {
-    return 23;
-  } else if (v < 235) {
-    return 26;
-  } else if (v < 239) {
-    return 29;
-  } else if (v < 240) {
-    return 33;
-  } else if (v < 241) {
-    return 35;
-  } else if (v < 242) {
-    return 37;
-  } else if (v < 243) {
-    return 39;
-  } else if (v < 244) {
-    return 41;
-  } else if (v < 245) {
-    return 49;
-  } else if (v < 246) {
-    return 53;
-  } else if (v < 247) {
-    return 61;
-  } else if (v < 248) {
-    return 66;
-  } else if (v < 249) {
-    return 75;
-  } else if (v < 250) {
-    return 77;
-  } else if (v < 251) {
-    return 82;
-  } else if (v < 252) {
-    return 85;
-  } else if (v < 253) {
-    return 97;
-  } else if (v < 254) {
-    return 100;
-  } else if (v < 255) {
-    return 101;
-  } else if (v < 256) {
-    return 105;
-  } else if (v < 258) {
-    return 109;
-  } else if (v < 259) {
-    return 112;
-  } else if (v < 260) {
-    return 113;
-  } else if (v < 261) {
-    return 113;
-  } else if (v < 262) {
-    return 113;
-  } else if (v < 263) {
-    return 113;
-  } else if (v < 264) {
-    return 112;
-  } else if (v < 265) {
-    return 111;
-  } else if (v < 267) {
-    return 109;
-  } else if (v < 268) {
-    return 108;
-  } else if (v < 269) {
-    return 105;
-  } else if (v < 270) {
-    return 104;
-  } else if (v < 271) {
-    return 101;
-  } else if (v < 272) {
-    return 100;
-  } else if (v < 273) {
-    return 94;
-  } else if (v < 274) {
-    return 92;
-  } else if (v < 275) {
-    return 89;
-  } else if (v < 276) {
-    return 87;
-  } else if (v < 278) {
-    return 82;
-  } else if (v < 279) {
-    return 80;
-  } else if (v < 284) {
-    return 77;
-  } else if (v < 285) {
-    return 66;
-  } else if (v < 286) {
-    return 65;
-  } else if (v < 287) {
-    return 64;
-  } else if (v < 288) {
-    return 63;
-  } else if (v < 289) {
-    return 60;
-  } else if (v < 290) {
-    return 58;
-  } else if (v < 291) {
-    return 56;
-  } else if (v < 292) {
-    return 54;
-  } else if (v < 295) {
-    return 52;
-  } else if (v < 296) {
-    return 49;
-  } else if (v < 298) {
-    return 46;
-  } else if (v < 299) {
-    return 44;
-  } else if (v < 300) {
-    return 43;
-  } else if (v < 302) {
-    return 41;
-  } else if (v < 303) {
-    return 40;
-  } else if (v < 304) {
-    return 38;
-  } else if (v < 306) {
-    return 38;
-  } else if (v < 307) {
-    return 37;
-  } else if (v < 308) {
-    return 37;
-  } else if (v < 310) {
-    return 37;
-  } else if (v < 311) {
-    return 38;
-  } else if (v < 312) {
-    return 40;
-  } else if (v < 313) {
-    return 43;
-  } else if (v < 315) {
-    return 45;
-  } else if (v < 317) {
-    return 50;
-  } else if (v < 319) {
-    return 52;
-  } else if (v < 321) {
-    return 57;
-  } else if (v < 323) {
-    return 63;
-  } else if (v < 324) {
-    return 68;
-  } else if (v < 325) {
-    return 75;
-  } else if (v < 326) {
-    return 80;
-  } else if (v < 327) {
-    return 87;
-  } else if (v < 328) {
-    return 93;
-  } else if (v < 329) {
-    return 104;
-  } else if (v < 330) {
-    return 108;
-  } else if (v < 331) {
-    return 110;
-  } else if (v < 332) {
-    return 122;
-  } else if (v < 333) {
-    return 129;
-  } else if (v < 334) {
-    return 132;
-  } else if (v < 335) {
-    return 137;
-  } else if (v < 336) {
-    return 138;
-  } else if (v < 337) {
-    return 145;
-  } else if (v < 339) {
-    return 146;
-  } else if (v < 340) {
-    return 149;
-  } else if (v < 341) {
-    return 152;
-  } else if (v < 343) {
-    return 153;
-  } else if (v < 344) {
-    return 154;
-  } else if (v < 346) {
-    return 155;
-  } else if (v < 347) {
-    return 156;
-  } else if (v < 348) {
-    return 156;
-  } else if (v < 352) {
-    return 156;
-  } else if (v < 353) {
-    return 153;
-  } else if (v < 354) {
-    return 150;
-  } else if (v < 355) {
-    return 148;
-  } else if (v < 357) {
-    return 144;
-  } else if (v < 358) {
-    return 139;
-  } else if (v < 359) {
-    return 133;
-  } else if (v < 360) {
-    return 130;
-  } else if (v < 361) {
-    return 120;
-  } else if (v < 362) {
-    return 117;
-  } else if (v < 363) {
-    return 113;
-  } else if (v < 365) {
-    return 109;
-  } else if (v < 366) {
-    return 102;
-  } else if (v < 367) {
-    return 97;
-  } else if (v < 368) {
-    return 92;
-  } else if (v < 370) {
-    return 85;
-  } else if (v < 371) {
-    return 78;
-  } else if (v < 372) {
-    return 75;
-  } else if (v < 373) {
-    return 66;
-  } else if (v < 374) {
-    return 63;
-  } else if (v < 376) {
-    return 61;
-  } else if (v < 378) {
-    return 53;
-  } else if (v < 379) {
-    return 48;
-  } else if (v < 380) {
-    return 44;
-  } else if (v < 382) {
-    return 39;
-  } else if (v < 383) {
-    return 36;
-  } else if (v < 384) {
-    return 34;
-  } else if (v < 385) {
-    return 26;
-  } else if (v < 386) {
-    return 25;
-  } else if (v < 387) {
-    return 21;
-  } else if (v < 388) {
-    return 20;
-  } else if (v < 390) {
-    return 17;
-  } else if (v < 391) {
-    return 17;
-  } else if (v < 392) {
-    return 16;
-  } else if (v < 394) {
-    return 15;
-  } else if (v < 395) {
-    return 15;
-  } else if (v < 396) {
-    return 16;
-  } else if (v < 397) {
-    return 17;
-  } else if (v < 399) {
-    return 17;
-  } else if (v < 401) {
-    return 20;
-  } else if (v < 403) {
-    return 24;
-  } else if (v < 405) {
-    return 26;
-  } else if (v < 406) {
-    return 30;
-  } else if (v < 407) {
-    return 32;
-  } else if (v < 408) {
-    return 33;
-  } else if (v < 409) {
-    return 40;
-  } else if (v < 410) {
-    return 41;
-  } else if (v < 411) {
-    return 45;
-  } else if (v < 412) {
-    return 47;
-  } else if (v < 413) {
-    return 59;
-  } else if (v < 414) {
-    return 62;
-  } else if (v < 415) {
-    return 66;
-  } else if (v < 416) {
-    return 72;
-  } else if (v < 417) {
-    return 92;
-  } else if (v < 418) {
-    return 98;
-  } else if (v < 419) {
-    return 103;
-  } else if (v < 420) {
-    return 113;
-  } else if (v < 421) {
-    return 126;
-  } else if (v < 422) {
-    return 139;
-  } else if (v < 423) {
-    return 142;
-  } else if (v < 424) {
-    return 146;
-  } else if (v < 425) {
-    return 168;
-  } else if (v < 426) {
-    return 169;
-  } else if (v < 429) {
-    return 173;
-  } else if (v < 431) {
-    return 176;
-  } else if (v < 432) {
-    return 174;
-  } else if (v < 433) {
-    return 165;
-  } else if (v < 435) {
-    return 158;
-  } else if (v < 436) {
-    return 121;
-  } else if (v < 437) {
-    return 118;
-  } else if (v < 438) {
-    return 112;
-  } else if (v < 439) {
-    return 105;
-  } else if (v < 443) {
-    return 101;
-  } else if (v < 444) {
-    return 89;
-  } else if (v < 445) {
-    return 85;
-  } else if (v < 446) {
-    return 82;
-  } else if (v < 447) {
-    return 80;
-  } else if (v < 448) {
-    return 79;
-  } else if (v < 450) {
-    return 73;
-  } else if (v < 451) {
-    return 70;
-  } else if (v < 452) {
-    return 68;
-  } else if (v < 453) {
-    return 63;
-  } else if (v < 454) {
-    return 61;
-  } else if (v < 455) {
-    return 60;
-  } else if (v < 456) {
-    return 58;
-  } else if (v < 457) {
-    return 56;
-  } else if (v < 460) {
-    return 55;
-  } else if (v < 462) {
-    return 55;
-  } else if (v < 463) {
-    return 55;
-  } else if (v < 465) {
-    return 58;
-  } else if (v < 466) {
-    return 62;
-  } else if (v < 467) {
-    return 64;
-  } else if (v < 468) {
-    return 66;
-  } else if (v < 469) {
-    return 73;
-  } else if (v < 470) {
-    return 75;
-  } else if (v < 471) {
-    return 84;
-  } else if (v < 472) {
-    return 94;
-  } else if (v < 474) {
-    return 105;
-  } else if (v < 475) {
-    return 129;
-  } else if (v < 476) {
-    return 135;
-  } else if (v < 477) {
-    return 145;
-  } else if (v < 478) {
-    return 147;
-  } else if (v < 479) {
-    return 149;
-  } else if (v < 480) {
-    return 155;
-  } else if (v < 481) {
-    return 161;
-  } else if (v < 482) {
-    return 163;
-  } else if (v < 483) {
-    return 167;
-  } else if (v < 484) {
-    return 170;
-  } else if (v < 485) {
-    return 173;
-  } else if (v < 486) {
-    return 177;
-  } else if (v < 488) {
-    return 182;
-  } else if (v < 489) {
-    return 193;
-  } else if (v < 490) {
-    return 193;
-  } else if (v < 491) {
-    return 197;
-  } else if (v < 492) {
-    return 199;
-  } else if (v < 493) {
-    return 203;
-  } else if (v < 494) {
-    return 205;
-  } else if (v < 495) {
-    return 207;
-  } else if (v < 497) {
-    return 210;
-  } else if (v < 498) {
-    return 217;
-  } else if (v < 499) {
-    return 220;
-  } else if (v < 500) {
-    return 222;
-  } else if (v < 501) {
-    return 226;
-  } else if (v < 502) {
-    return 229;
-  } else if (v < 503) {
-    return 230;
-  } else if (v < 504) {
-    return 232;
-  } else if (v < 505) {
-    return 235;
-  } else if (v < 506) {
-    return 237;
-  } else if (v < 507) {
-    return 240;
-  } else if (v < 510) {
-    return 241;
-  } else if (v < 511) {
-    return 250;
-  }
-  return 250;
+	v=v/8;
+	if (v<5) { return 0; }
+	else if (v<6) { return  1; }
+	else if (v<7) { return  1; }
+	else if (v<8) { return  3; }
+	else if (v<11) { return  5; }
+	else if (v<12) { return  6; }
+	else if (v<13) { return  7; }
+	else if (v<14) { return  9; }
+	else if (v<15) { return  9; }
+	else if (v<20) { return  9; }
+	else if (v<22) { return  11; }
+	else if (v<23) { return  11; }
+	else if (v<24) { return  12; }
+	else if (v<26) { return  13; }
+	else if (v<28) { return  13; }
+	else if (v<30) { return  13; }
+	else if (v<31) { return  13; }
+	else if (v<32) { return  13; }
+	else if (v<33) { return  12; }
+	else if (v<35) { return  12; }
+	else if (v<36) { return  12; }
+	else if (v<38) { return  12; }
+	else if (v<39) { return  11; }
+	else if (v<40) { return  10; }
+	else if (v<42) { return  10; }
+	else if (v<43) { return  10; }
+	else if (v<45) { return  9; }
+	else if (v<47) { return  9; }
+	else if (v<48) { return  9; }
+	else if (v<49) { return  9; }
+	else if (v<51) { return  8; }
+	else if (v<52) { return  8; }
+	else if (v<54) { return  8; }
+	else if (v<55) { return  8; }
+	else if (v<56) { return  8; }
+	else if (v<57) { return  8; }
+	else if (v<59) { return  8; }
+	else if (v<60) { return  8; }
+	else if (v<63) { return  8; }
+	else if (v<67) { return  9; }
+	else if (v<70) { return  13; }
+	else if (v<71) { return  14; }
+	else if (v<72) { return  16; }
+	else if (v<73) { return  17; }
+	else if (v<74) { return  18; }
+	else if (v<75) { return  19; }
+	else if (v<76) { return  20; }
+	else if (v<77) { return  22; }
+	else if (v<78) { return  25; }
+	else if (v<79) { return  26; }
+	else if (v<80) { return  28; }
+	else if (v<81) { return  31; }
+	else if (v<82) { return  33; }
+	else if (v<83) { return  35; }
+	else if (v<85) { return  37; }
+	else if (v<86) { return  40; }
+	else if (v<87) { return  41; }
+	else if (v<88) { return  41; }
+	else if (v<89) { return  43; }
+	else if (v<90) { return  44; }
+	else if (v<91) { return  45; }
+	else if (v<92) { return  45; }
+	else if (v<94) { return  45; }
+	else if (v<95) { return  45; }
+	else if (v<96) { return  45; }
+	else if (v<98) { return  45; }
+	else if (v<99) { return  45; }
+	else if (v<101) { return  44; }
+	else if (v<102) { return  42; }
+	else if (v<103) { return  41; }
+	else if (v<104) { return  41; }
+	else if (v<105) { return  40; }
+	else if (v<107) { return  40; }
+	else if (v<111) { return  39; }
+	else if (v<112) { return  38; }
+	else if (v<114) { return  37; }
+	else if (v<115) { return  36; }
+	else if (v<117) { return  35; }
+	else if (v<119) { return  34; }
+	else if (v<121) { return  33; }
+	else if (v<123) { return  33; }
+	else if (v<124) { return  32; }
+	else if (v<125) { return  31; }
+	else if (v<127) { return  31; }
+	else if (v<130) { return  30; }
+	else if (v<131) { return  30; }
+	else if (v<134) { return  29; }
+	else if (v<135) { return  29; }
+	else if (v<137) { return  29; }
+	else if (v<139) { return  29; }
+	else if (v<141) { return  29; }
+	else if (v<145) { return  29; }
+	else if (v<149) { return  32; }
+	else if (v<151) { return  35; }
+	else if (v<155) { return  37; }
+	else if (v<157) { return  42; }
+	else if (v<159) { return  48; }
+	else if (v<160) { return  51; }
+	else if (v<161) { return  57; }
+	else if (v<162) { return  58; }
+	else if (v<163) { return  60; }
+	else if (v<164) { return  62; }
+	else if (v<165) { return  65; }
+	else if (v<166) { return  65; }
+	else if (v<167) { return  65; }
+	else if (v<168) { return  65; }
+	else if (v<170) { return  65; }
+	else if (v<171) { return  65; }
+	else if (v<175) { return  65; }
+	else if (v<176) { return  62; }
+	else if (v<177) { return  60; }
+	else if (v<179) { return  59; }
+	else if (v<180) { return  58; }
+	else if (v<182) { return  55; }
+	else if (v<183) { return  53; }
+	else if (v<186) { return  52; }
+	else if (v<187) { return  48; }
+	else if (v<188) { return  46; }
+	else if (v<191) { return  45; }
+	else if (v<192) { return  42; }
+	else if (v<193) { return  40; }
+	else if (v<195) { return  40; }
+	else if (v<197) { return  38; }
+	else if (v<199) { return  37; }
+	else if (v<202) { return  36; }
+	else if (v<203) { return  33; }
+	else if (v<205) { return  32; }
+	else if (v<207) { return  30; }
+	else if (v<209) { return  30; }
+	else if (v<211) { return  29; }
+	else if (v<212) { return  27; }
+	else if (v<215) { return  26; }
+	else if (v<217) { return  25; }
+	else if (v<219) { return  25; }
+	else if (v<221) { return  25; }
+	else if (v<223) { return  24; }
+	else if (v<224) { return  23; }
+	else if (v<225) { return  23; }
+	else if (v<226) { return  23; }
+	else if (v<227) { return  23; }
+	else if (v<229) { return  23; }
+	else if (v<231) { return  23; }
+	else if (v<234) { return  23; }
+	else if (v<235) { return  26; }
+	else if (v<239) { return  29; }
+	else if (v<240) { return  33; }
+	else if (v<241) { return  35; }
+	else if (v<242) { return  37; }
+	else if (v<243) { return  39; }
+	else if (v<244) { return  41; }
+	else if (v<245) { return  49; }
+	else if (v<246) { return  53; }
+	else if (v<247) { return  61; }
+	else if (v<248) { return  66; }
+	else if (v<249) { return  75; }
+	else if (v<250) { return  77; }
+	else if (v<251) { return  82; }
+	else if (v<252) { return  85; }
+	else if (v<253) { return  97; }
+	else if (v<254) { return  100; }
+	else if (v<255) { return  101; }
+	else if (v<256) { return  105; }
+	else if (v<258) { return  109; }
+	else if (v<259) { return  112; }
+	else if (v<260) { return  113; }
+	else if (v<261) { return  113; }
+	else if (v<262) { return  113; }
+	else if (v<263) { return  113; }
+	else if (v<264) { return  112; }
+	else if (v<265) { return  111; }
+	else if (v<267) { return  109; }
+	else if (v<268) { return  108; }
+	else if (v<269) { return  105; }
+	else if (v<270) { return  104; }
+	else if (v<271) { return  101; }
+	else if (v<272) { return  100; }
+	else if (v<273) { return  94; }
+	else if (v<274) { return  92; }
+	else if (v<275) { return  89; }
+	else if (v<276) { return  87; }
+	else if (v<278) { return  82; }
+	else if (v<279) { return  80; }
+	else if (v<284) { return  77; }
+	else if (v<285) { return  66; }
+	else if (v<286) { return  65; }
+	else if (v<287) { return  64; }
+	else if (v<288) { return  63; }
+	else if (v<289) { return  60; }
+	else if (v<290) { return  58; }
+	else if (v<291) { return  56; }
+	else if (v<292) { return  54; }
+	else if (v<295) { return  52; }
+	else if (v<296) { return  49; }
+	else if (v<298) { return  46; }
+	else if (v<299) { return  44; }
+	else if (v<300) { return  43; }
+	else if (v<302) { return  41; }
+	else if (v<303) { return  40; }
+	else if (v<304) { return  38; }
+	else if (v<306) { return  38; }
+	else if (v<307) { return  37; }
+	else if (v<308) { return  37; }
+	else if (v<310) { return  37; }
+	else if (v<311) { return  38; }
+	else if (v<312) { return  40; }
+	else if (v<313) { return  43; }
+	else if (v<315) { return  45; }
+	else if (v<317) { return  50; }
+	else if (v<319) { return  52; }
+	else if (v<321) { return  57; }
+	else if (v<323) { return  63; }
+	else if (v<324) { return  68; }
+	else if (v<325) { return  75; }
+	else if (v<326) { return  80; }
+	else if (v<327) { return  87; }
+	else if (v<328) { return  93; }
+	else if (v<329) { return  104; }
+	else if (v<330) { return  108; }
+	else if (v<331) { return  110; }
+	else if (v<332) { return  122; }
+	else if (v<333) { return  129; }
+	else if (v<334) { return  132; }
+	else if (v<335) { return  137; }
+	else if (v<336) { return  138; }
+	else if (v<337) { return  145; }
+	else if (v<339) { return  146; }
+	else if (v<340) { return  149; }
+	else if (v<341) { return  152; }
+	else if (v<343) { return  153; }
+	else if (v<344) { return  154; }
+	else if (v<346) { return  155; }
+	else if (v<347) { return  156; }
+	else if (v<348) { return  156; }
+	else if (v<352) { return  156; }
+	else if (v<353) { return  153; }
+	else if (v<354) { return  150; }
+	else if (v<355) { return  148; }
+	else if (v<357) { return  144; }
+	else if (v<358) { return  139; }
+	else if (v<359) { return  133; }
+	else if (v<360) { return  130; }
+	else if (v<361) { return  120; }
+	else if (v<362) { return  117; }
+	else if (v<363) { return  113; }
+	else if (v<365) { return  109; }
+	else if (v<366) { return  102; }
+	else if (v<367) { return  97; }
+	else if (v<368) { return  92; }
+	else if (v<370) { return  85; }
+	else if (v<371) { return  78; }
+	else if (v<372) { return  75; }
+	else if (v<373) { return  66; }
+	else if (v<374) { return  63; }
+	else if (v<376) { return  61; }
+	else if (v<378) { return  53; }
+	else if (v<379) { return  48; }
+	else if (v<380) { return  44; }
+	else if (v<382) { return  39; }
+	else if (v<383) { return  36; }
+	else if (v<384) { return  34; }
+	else if (v<385) { return  26; }
+	else if (v<386) { return  25; }
+	else if (v<387) { return  21; }
+	else if (v<388) { return  20; }
+	else if (v<390) { return  17; }
+	else if (v<391) { return  17; }
+	else if (v<392) { return  16; }
+	else if (v<394) { return  15; }
+	else if (v<395) { return  15; }
+	else if (v<396) { return  16; }
+	else if (v<397) { return  17; }
+	else if (v<399) { return  17; }
+	else if (v<401) { return  20; }
+	else if (v<403) { return  24; }
+	else if (v<405) { return  26; }
+	else if (v<406) { return  30; }
+	else if (v<407) { return  32; }
+	else if (v<408) { return  33; }
+	else if (v<409) { return  40; }
+	else if (v<410) { return  41; }
+	else if (v<411) { return  45; }
+	else if (v<412) { return  47; }
+	else if (v<413) { return  59; }
+	else if (v<414) { return  62; }
+	else if (v<415) { return  66; }
+	else if (v<416) { return  72; }
+	else if (v<417) { return  92; }
+	else if (v<418) { return  98; }
+	else if (v<419) { return  103; }
+	else if (v<420) { return  113; }
+	else if (v<421) { return  126; }
+	else if (v<422) { return  139; }
+	else if (v<423) { return  142; }
+	else if (v<424) { return  146; }
+	else if (v<425) { return  168; }
+	else if (v<426) { return  169; }
+	else if (v<429) { return  173; }
+	else if (v<431) { return  176; }
+	else if (v<432) { return  174; }
+	else if (v<433) { return  165; }
+	else if (v<435) { return  158; }
+	else if (v<436) { return  121; }
+	else if (v<437) { return  118; }
+	else if (v<438) { return  112; }
+	else if (v<439) { return  105; }
+	else if (v<443) { return  101; }
+	else if (v<444) { return  89; }
+	else if (v<445) { return  85; }
+	else if (v<446) { return  82; }
+	else if (v<447) { return  80; }
+	else if (v<448) { return  79; }
+	else if (v<450) { return  73; }
+	else if (v<451) { return  70; }
+	else if (v<452) { return  68; }
+	else if (v<453) { return  63; }
+	else if (v<454) { return  61; }
+	else if (v<455) { return  60; }
+	else if (v<456) { return  58; }
+	else if (v<457) { return  56; }
+	else if (v<460) { return  55; }
+	else if (v<462) { return  55; }
+	else if (v<463) { return  55; }
+	else if (v<465) { return  58; }
+	else if (v<466) { return  62; }
+	else if (v<467) { return  64; }
+	else if (v<468) { return  66; }
+	else if (v<469) { return  73; }
+	else if (v<470) { return  75; }
+	else if (v<471) { return  84; }
+	else if (v<472) { return  94; }
+	else if (v<474) { return  105; }
+	else if (v<475) { return  129; }
+	else if (v<476) { return  135; }
+	else if (v<477) { return  145; }
+	else if (v<478) { return  147; }
+	else if (v<479) { return  149; }
+	else if (v<480) { return  155; }
+	else if (v<481) { return  161; }
+	else if (v<482) { return  163; }
+	else if (v<483) { return  167; }
+	else if (v<484) { return  170; }
+	else if (v<485) { return  173; }
+	else if (v<486) { return  177; }
+	else if (v<488) { return  182; }
+	else if (v<489) { return  193; }
+	else if (v<490) { return  193; }
+	else if (v<491) { return  197; }
+	else if (v<492) { return  199; }
+	else if (v<493) { return  203; }
+	else if (v<494) { return  205; }
+	else if (v<495) { return  207; }
+	else if (v<497) { return  210; }
+	else if (v<498) { return  217; }
+	else if (v<499) { return  220; }
+	else if (v<500) { return  222; }
+	else if (v<501) { return  226; }
+	else if (v<502) { return  229; }
+	else if (v<503) { return  230; }
+	else if (v<504) { return  232; }
+	else if (v<505) { return  235; }
+	else if (v<506) { return  237; }
+	else if (v<507) { return  240; }
+	else if (v<510) { return  241; }
+	else if (v<511) { return  250; }
+	 return 250;
 }
 uint8_t ease_probability_retrig(uint16_t v) {
-  v = v / 8;
-  if (v < 1) {
-    return 0;
-  } else if (v < 3) {
-    return 2;
-  } else if (v < 5) {
-    return 2;
-  } else if (v < 7) {
-    return 5;
-  } else if (v < 11) {
-    return 8;
-  } else if (v < 14) {
-    return 12;
-  } else if (v < 16) {
-    return 16;
-  } else if (v < 18) {
-    return 20;
-  } else if (v < 19) {
-    return 22;
-  } else if (v < 20) {
-    return 25;
-  } else if (v < 22) {
-    return 28;
-  } else if (v < 23) {
-    return 30;
-  } else if (v < 24) {
-    return 34;
-  } else if (v < 25) {
-    return 39;
-  } else if (v < 26) {
-    return 41;
-  } else if (v < 27) {
-    return 43;
-  } else if (v < 30) {
-    return 44;
-  } else if (v < 31) {
-    return 45;
-  } else if (v < 34) {
-    return 45;
-  } else if (v < 35) {
-    return 45;
-  } else if (v < 38) {
-    return 45;
-  } else if (v < 39) {
-    return 45;
-  } else if (v < 41) {
-    return 45;
-  } else if (v < 43) {
-    return 44;
-  } else if (v < 44) {
-    return 41;
-  } else if (v < 45) {
-    return 40;
-  } else if (v < 46) {
-    return 38;
-  } else if (v < 47) {
-    return 37;
-  } else if (v < 48) {
-    return 36;
-  } else if (v < 49) {
-    return 33;
-  } else if (v < 51) {
-    return 32;
-  } else if (v < 52) {
-    return 27;
-  } else if (v < 53) {
-    return 23;
-  } else if (v < 54) {
-    return 21;
-  } else if (v < 55) {
-    return 20;
-  } else if (v < 56) {
-    return 18;
-  } else if (v < 57) {
-    return 14;
-  } else if (v < 58) {
-    return 13;
-  } else if (v < 59) {
-    return 12;
-  } else if (v < 60) {
-    return 11;
-  } else if (v < 61) {
-    return 9;
-  } else if (v < 62) {
-    return 8;
-  } else if (v < 63) {
-    return 8;
-  } else if (v < 64) {
-    return 8;
-  } else if (v < 65) {
-    return 8;
-  } else if (v < 67) {
-    return 8;
-  } else if (v < 68) {
-    return 8;
-  } else if (v < 70) {
-    return 8;
-  } else if (v < 71) {
-    return 8;
-  } else if (v < 72) {
-    return 8;
-  } else if (v < 73) {
-    return 8;
-  } else if (v < 74) {
-    return 8;
-  } else if (v < 75) {
-    return 8;
-  } else if (v < 77) {
-    return 8;
-  } else if (v < 79) {
-    return 9;
-  } else if (v < 83) {
-    return 13;
-  } else if (v < 86) {
-    return 17;
-  } else if (v < 90) {
-    return 21;
-  } else if (v < 92) {
-    return 27;
-  } else if (v < 97) {
-    return 31;
-  } else if (v < 100) {
-    return 41;
-  } else if (v < 104) {
-    return 47;
-  } else if (v < 108) {
-    return 54;
-  } else if (v < 110) {
-    return 59;
-  } else if (v < 114) {
-    return 65;
-  } else if (v < 115) {
-    return 72;
-  } else if (v < 117) {
-    return 75;
-  } else if (v < 119) {
-    return 78;
-  } else if (v < 121) {
-    return 79;
-  } else if (v < 124) {
-    return 82;
-  } else if (v < 127) {
-    return 82;
-  } else if (v < 131) {
-    return 82;
-  } else if (v < 133) {
-    return 81;
-  } else if (v < 136) {
-    return 81;
-  } else if (v < 139) {
-    return 77;
-  } else if (v < 141) {
-    return 73;
-  } else if (v < 143) {
-    return 68;
-  } else if (v < 145) {
-    return 62;
-  } else if (v < 147) {
-    return 57;
-  } else if (v < 148) {
-    return 52;
-  } else if (v < 151) {
-    return 44;
-  } else if (v < 152) {
-    return 41;
-  } else if (v < 154) {
-    return 35;
-  } else if (v < 155) {
-    return 32;
-  } else if (v < 156) {
-    return 27;
-  } else if (v < 158) {
-    return 24;
-  } else if (v < 159) {
-    return 20;
-  } else if (v < 161) {
-    return 19;
-  } else if (v < 163) {
-    return 15;
-  } else if (v < 164) {
-    return 13;
-  } else if (v < 165) {
-    return 9;
-  } else if (v < 166) {
-    return 9;
-  } else if (v < 167) {
-    return 9;
-  } else if (v < 169) {
-    return 9;
-  } else if (v < 170) {
-    return 7;
-  } else if (v < 171) {
-    return 6;
-  } else if (v < 172) {
-    return 6;
-  } else if (v < 173) {
-    return 6;
-  } else if (v < 174) {
-    return 6;
-  } else if (v < 175) {
-    return 6;
-  } else if (v < 178) {
-    return 6;
-  } else if (v < 180) {
-    return 6;
-  } else if (v < 185) {
-    return 7;
-  } else if (v < 188) {
-    return 9;
-  } else if (v < 191) {
-    return 11;
-  } else if (v < 192) {
-    return 13;
-  } else if (v < 193) {
-    return 14;
-  } else if (v < 194) {
-    return 15;
-  } else if (v < 195) {
-    return 16;
-  } else if (v < 197) {
-    return 17;
-  } else if (v < 199) {
-    return 20;
-  } else if (v < 200) {
-    return 21;
-  } else if (v < 202) {
-    return 23;
-  } else if (v < 203) {
-    return 25;
-  } else if (v < 204) {
-    return 26;
-  } else if (v < 206) {
-    return 30;
-  } else if (v < 207) {
-    return 38;
-  } else if (v < 210) {
-    return 42;
-  } else if (v < 211) {
-    return 49;
-  } else if (v < 212) {
-    return 57;
-  } else if (v < 214) {
-    return 63;
-  } else if (v < 217) {
-    return 69;
-  } else if (v < 220) {
-    return 76;
-  } else if (v < 224) {
-    return 84;
-  } else if (v < 225) {
-    return 92;
-  } else if (v < 231) {
-    return 95;
-  } else if (v < 233) {
-    return 105;
-  } else if (v < 239) {
-    return 109;
-  } else if (v < 240) {
-    return 122;
-  } else if (v < 242) {
-    return 125;
-  } else if (v < 243) {
-    return 126;
-  } else if (v < 245) {
-    return 126;
-  } else if (v < 247) {
-    return 125;
-  } else if (v < 251) {
-    return 122;
-  } else if (v < 253) {
-    return 116;
-  } else if (v < 255) {
-    return 109;
-  } else if (v < 257) {
-    return 92;
-  } else if (v < 258) {
-    return 84;
-  } else if (v < 259) {
-    return 78;
-  } else if (v < 262) {
-    return 73;
-  } else if (v < 263) {
-    return 69;
-  } else if (v < 264) {
-    return 61;
-  } else if (v < 265) {
-    return 57;
-  } else if (v < 266) {
-    return 53;
-  } else if (v < 267) {
-    return 51;
-  } else if (v < 269) {
-    return 49;
-  } else if (v < 271) {
-    return 42;
-  } else if (v < 272) {
-    return 36;
-  } else if (v < 273) {
-    return 32;
-  } else if (v < 274) {
-    return 30;
-  } else if (v < 275) {
-    return 28;
-  } else if (v < 277) {
-    return 27;
-  } else if (v < 279) {
-    return 22;
-  } else if (v < 280) {
-    return 20;
-  } else if (v < 281) {
-    return 17;
-  } else if (v < 282) {
-    return 15;
-  } else if (v < 283) {
-    return 13;
-  } else if (v < 284) {
-    return 13;
-  } else if (v < 285) {
-    return 12;
-  } else if (v < 287) {
-    return 11;
-  } else if (v < 289) {
-    return 11;
-  } else if (v < 290) {
-    return 10;
-  } else if (v < 291) {
-    return 9;
-  } else if (v < 292) {
-    return 9;
-  } else if (v < 293) {
-    return 9;
-  } else if (v < 295) {
-    return 9;
-  } else if (v < 297) {
-    return 9;
-  } else if (v < 299) {
-    return 12;
-  } else if (v < 302) {
-    return 13;
-  } else if (v < 303) {
-    return 17;
-  } else if (v < 304) {
-    return 18;
-  } else if (v < 305) {
-    return 20;
-  } else if (v < 310) {
-    return 21;
-  } else if (v < 312) {
-    return 29;
-  } else if (v < 314) {
-    return 31;
-  } else if (v < 315) {
-    return 35;
-  } else if (v < 317) {
-    return 38;
-  } else if (v < 319) {
-    return 46;
-  } else if (v < 321) {
-    return 51;
-  } else if (v < 324) {
-    return 57;
-  } else if (v < 328) {
-    return 67;
-  } else if (v < 330) {
-    return 76;
-  } else if (v < 331) {
-    return 84;
-  } else if (v < 334) {
-    return 92;
-  } else if (v < 336) {
-    return 100;
-  } else if (v < 338) {
-    return 109;
-  } else if (v < 342) {
-    return 117;
-  } else if (v < 346) {
-    return 127;
-  } else if (v < 350) {
-    return 138;
-  } else if (v < 351) {
-    return 147;
-  } else if (v < 353) {
-    return 153;
-  } else if (v < 354) {
-    return 157;
-  } else if (v < 355) {
-    return 158;
-  } else if (v < 358) {
-    return 157;
-  } else if (v < 365) {
-    return 152;
-  } else if (v < 366) {
-    return 114;
-  } else if (v < 368) {
-    return 109;
-  } else if (v < 370) {
-    return 101;
-  } else if (v < 371) {
-    return 93;
-  } else if (v < 372) {
-    return 85;
-  } else if (v < 373) {
-    return 81;
-  } else if (v < 374) {
-    return 76;
-  } else if (v < 375) {
-    return 71;
-  } else if (v < 376) {
-    return 65;
-  } else if (v < 377) {
-    return 61;
-  } else if (v < 378) {
-    return 58;
-  } else if (v < 379) {
-    return 57;
-  } else if (v < 381) {
-    return 55;
-  } else if (v < 383) {
-    return 50;
-  } else if (v < 384) {
-    return 49;
-  } else if (v < 385) {
-    return 46;
-  } else if (v < 387) {
-    return 43;
-  } else if (v < 389) {
-    return 41;
-  } else if (v < 391) {
-    return 38;
-  } else if (v < 395) {
-    return 37;
-  } else if (v < 396) {
-    return 28;
-  } else if (v < 398) {
-    return 25;
-  } else if (v < 399) {
-    return 24;
-  } else if (v < 400) {
-    return 22;
-  } else if (v < 401) {
-    return 19;
-  } else if (v < 402) {
-    return 18;
-  } else if (v < 403) {
-    return 17;
-  } else if (v < 404) {
-    return 16;
-  } else if (v < 405) {
-    return 13;
-  } else if (v < 406) {
-    return 12;
-  } else if (v < 407) {
-    return 12;
-  } else if (v < 408) {
-    return 10;
-  } else if (v < 409) {
-    return 9;
-  } else if (v < 410) {
-    return 9;
-  } else if (v < 411) {
-    return 9;
-  } else if (v < 412) {
-    return 8;
-  } else if (v < 414) {
-    return 8;
-  } else if (v < 415) {
-    return 8;
-  } else if (v < 416) {
-    return 8;
-  } else if (v < 419) {
-    return 8;
-  } else if (v < 421) {
-    return 8;
-  } else if (v < 422) {
-    return 8;
-  } else if (v < 423) {
-    return 8;
-  } else if (v < 424) {
-    return 9;
-  } else if (v < 426) {
-    return 9;
-  } else if (v < 427) {
-    return 9;
-  } else if (v < 429) {
-    return 9;
-  } else if (v < 430) {
-    return 9;
-  } else if (v < 431) {
-    return 9;
-  } else if (v < 432) {
-    return 10;
-  } else if (v < 435) {
-    return 10;
-  } else if (v < 437) {
-    return 11;
-  } else if (v < 438) {
-    return 12;
-  } else if (v < 439) {
-    return 13;
-  } else if (v < 440) {
-    return 13;
-  } else if (v < 442) {
-    return 15;
-  } else if (v < 443) {
-    return 16;
-  } else if (v < 447) {
-    return 17;
-  } else if (v < 449) {
-    return 18;
-  } else if (v < 450) {
-    return 21;
-  } else if (v < 452) {
-    return 23;
-  } else if (v < 453) {
-    return 27;
-  } else if (v < 455) {
-    return 29;
-  } else if (v < 457) {
-    return 32;
-  } else if (v < 458) {
-    return 37;
-  } else if (v < 459) {
-    return 37;
-  } else if (v < 461) {
-    return 41;
-  } else if (v < 462) {
-    return 45;
-  } else if (v < 463) {
-    return 46;
-  } else if (v < 464) {
-    return 49;
-  } else if (v < 466) {
-    return 56;
-  } else if (v < 468) {
-    return 58;
-  } else if (v < 469) {
-    return 65;
-  } else if (v < 470) {
-    return 68;
-  } else if (v < 471) {
-    return 70;
-  } else if (v < 472) {
-    return 77;
-  } else if (v < 475) {
-    return 82;
-  } else if (v < 476) {
-    return 99;
-  } else if (v < 477) {
-    return 103;
-  } else if (v < 478) {
-    return 105;
-  } else if (v < 480) {
-    return 109;
-  } else if (v < 482) {
-    return 119;
-  } else if (v < 483) {
-    return 125;
-  } else if (v < 484) {
-    return 131;
-  } else if (v < 485) {
-    return 141;
-  } else if (v < 486) {
-    return 146;
-  } else if (v < 487) {
-    return 152;
-  } else if (v < 488) {
-    return 154;
-  } else if (v < 491) {
-    return 165;
-  } else if (v < 492) {
-    return 168;
-  } else if (v < 495) {
-    return 174;
-  } else if (v < 497) {
-    return 187;
-  } else if (v < 498) {
-    return 194;
-  } else if (v < 499) {
-    return 199;
-  } else if (v < 501) {
-    return 205;
-  } else if (v < 502) {
-    return 211;
-  } else if (v < 503) {
-    return 214;
-  } else if (v < 504) {
-    return 214;
-  } else if (v < 505) {
-    return 219;
-  } else if (v < 506) {
-    return 222;
-  } else if (v < 507) {
-    return 225;
-  } else if (v < 508) {
-    return 227;
-  } else if (v < 509) {
-    return 232;
-  } else if (v < 510) {
-    return 234;
-  } else if (v < 511) {
-    return 238;
-  } else if (v < 513) {
-    return 241;
-  }
-  return 241;
+	v=v/8;
+	if (v<1) { return 0; }
+	else if (v<3) { return  2; }
+	else if (v<5) { return  2; }
+	else if (v<7) { return  5; }
+	else if (v<11) { return  8; }
+	else if (v<14) { return  12; }
+	else if (v<16) { return  16; }
+	else if (v<18) { return  20; }
+	else if (v<19) { return  22; }
+	else if (v<20) { return  25; }
+	else if (v<22) { return  28; }
+	else if (v<23) { return  30; }
+	else if (v<24) { return  34; }
+	else if (v<25) { return  39; }
+	else if (v<26) { return  41; }
+	else if (v<27) { return  43; }
+	else if (v<30) { return  44; }
+	else if (v<31) { return  45; }
+	else if (v<34) { return  45; }
+	else if (v<35) { return  45; }
+	else if (v<38) { return  45; }
+	else if (v<39) { return  45; }
+	else if (v<41) { return  45; }
+	else if (v<43) { return  44; }
+	else if (v<44) { return  41; }
+	else if (v<45) { return  40; }
+	else if (v<46) { return  38; }
+	else if (v<47) { return  37; }
+	else if (v<48) { return  36; }
+	else if (v<49) { return  33; }
+	else if (v<51) { return  32; }
+	else if (v<52) { return  27; }
+	else if (v<53) { return  23; }
+	else if (v<54) { return  21; }
+	else if (v<55) { return  20; }
+	else if (v<56) { return  18; }
+	else if (v<57) { return  14; }
+	else if (v<58) { return  13; }
+	else if (v<59) { return  12; }
+	else if (v<60) { return  11; }
+	else if (v<61) { return  9; }
+	else if (v<62) { return  8; }
+	else if (v<63) { return  8; }
+	else if (v<64) { return  8; }
+	else if (v<65) { return  8; }
+	else if (v<67) { return  8; }
+	else if (v<68) { return  8; }
+	else if (v<70) { return  8; }
+	else if (v<71) { return  8; }
+	else if (v<72) { return  8; }
+	else if (v<73) { return  8; }
+	else if (v<74) { return  8; }
+	else if (v<75) { return  8; }
+	else if (v<77) { return  8; }
+	else if (v<79) { return  9; }
+	else if (v<83) { return  13; }
+	else if (v<86) { return  17; }
+	else if (v<90) { return  21; }
+	else if (v<92) { return  27; }
+	else if (v<97) { return  31; }
+	else if (v<100) { return  41; }
+	else if (v<104) { return  47; }
+	else if (v<108) { return  54; }
+	else if (v<110) { return  59; }
+	else if (v<114) { return  65; }
+	else if (v<115) { return  72; }
+	else if (v<117) { return  75; }
+	else if (v<119) { return  78; }
+	else if (v<121) { return  79; }
+	else if (v<124) { return  82; }
+	else if (v<127) { return  82; }
+	else if (v<131) { return  82; }
+	else if (v<133) { return  81; }
+	else if (v<136) { return  81; }
+	else if (v<139) { return  77; }
+	else if (v<141) { return  73; }
+	else if (v<143) { return  68; }
+	else if (v<145) { return  62; }
+	else if (v<147) { return  57; }
+	else if (v<148) { return  52; }
+	else if (v<151) { return  44; }
+	else if (v<152) { return  41; }
+	else if (v<154) { return  35; }
+	else if (v<155) { return  32; }
+	else if (v<156) { return  27; }
+	else if (v<158) { return  24; }
+	else if (v<159) { return  20; }
+	else if (v<161) { return  19; }
+	else if (v<163) { return  15; }
+	else if (v<164) { return  13; }
+	else if (v<165) { return  9; }
+	else if (v<166) { return  9; }
+	else if (v<167) { return  9; }
+	else if (v<169) { return  9; }
+	else if (v<170) { return  7; }
+	else if (v<171) { return  6; }
+	else if (v<172) { return  6; }
+	else if (v<173) { return  6; }
+	else if (v<174) { return  6; }
+	else if (v<175) { return  6; }
+	else if (v<178) { return  6; }
+	else if (v<180) { return  6; }
+	else if (v<185) { return  7; }
+	else if (v<188) { return  9; }
+	else if (v<191) { return  11; }
+	else if (v<192) { return  13; }
+	else if (v<193) { return  14; }
+	else if (v<194) { return  15; }
+	else if (v<195) { return  16; }
+	else if (v<197) { return  17; }
+	else if (v<199) { return  20; }
+	else if (v<200) { return  21; }
+	else if (v<202) { return  23; }
+	else if (v<203) { return  25; }
+	else if (v<204) { return  26; }
+	else if (v<206) { return  30; }
+	else if (v<207) { return  38; }
+	else if (v<210) { return  42; }
+	else if (v<211) { return  49; }
+	else if (v<212) { return  57; }
+	else if (v<214) { return  63; }
+	else if (v<217) { return  69; }
+	else if (v<220) { return  76; }
+	else if (v<224) { return  84; }
+	else if (v<225) { return  92; }
+	else if (v<231) { return  95; }
+	else if (v<233) { return  105; }
+	else if (v<239) { return  109; }
+	else if (v<240) { return  122; }
+	else if (v<242) { return  125; }
+	else if (v<243) { return  126; }
+	else if (v<245) { return  126; }
+	else if (v<247) { return  125; }
+	else if (v<251) { return  122; }
+	else if (v<253) { return  116; }
+	else if (v<255) { return  109; }
+	else if (v<257) { return  92; }
+	else if (v<258) { return  84; }
+	else if (v<259) { return  78; }
+	else if (v<262) { return  73; }
+	else if (v<263) { return  69; }
+	else if (v<264) { return  61; }
+	else if (v<265) { return  57; }
+	else if (v<266) { return  53; }
+	else if (v<267) { return  51; }
+	else if (v<269) { return  49; }
+	else if (v<271) { return  42; }
+	else if (v<272) { return  36; }
+	else if (v<273) { return  32; }
+	else if (v<274) { return  30; }
+	else if (v<275) { return  28; }
+	else if (v<277) { return  27; }
+	else if (v<279) { return  22; }
+	else if (v<280) { return  20; }
+	else if (v<281) { return  17; }
+	else if (v<282) { return  15; }
+	else if (v<283) { return  13; }
+	else if (v<284) { return  13; }
+	else if (v<285) { return  12; }
+	else if (v<287) { return  11; }
+	else if (v<289) { return  11; }
+	else if (v<290) { return  10; }
+	else if (v<291) { return  9; }
+	else if (v<292) { return  9; }
+	else if (v<293) { return  9; }
+	else if (v<295) { return  9; }
+	else if (v<297) { return  9; }
+	else if (v<299) { return  12; }
+	else if (v<302) { return  13; }
+	else if (v<303) { return  17; }
+	else if (v<304) { return  18; }
+	else if (v<305) { return  20; }
+	else if (v<310) { return  21; }
+	else if (v<312) { return  29; }
+	else if (v<314) { return  31; }
+	else if (v<315) { return  35; }
+	else if (v<317) { return  38; }
+	else if (v<319) { return  46; }
+	else if (v<321) { return  51; }
+	else if (v<324) { return  57; }
+	else if (v<328) { return  67; }
+	else if (v<330) { return  76; }
+	else if (v<331) { return  84; }
+	else if (v<334) { return  92; }
+	else if (v<336) { return  100; }
+	else if (v<338) { return  109; }
+	else if (v<342) { return  117; }
+	else if (v<346) { return  127; }
+	else if (v<350) { return  138; }
+	else if (v<351) { return  147; }
+	else if (v<353) { return  153; }
+	else if (v<354) { return  157; }
+	else if (v<355) { return  158; }
+	else if (v<358) { return  157; }
+	else if (v<365) { return  152; }
+	else if (v<366) { return  114; }
+	else if (v<368) { return  109; }
+	else if (v<370) { return  101; }
+	else if (v<371) { return  93; }
+	else if (v<372) { return  85; }
+	else if (v<373) { return  81; }
+	else if (v<374) { return  76; }
+	else if (v<375) { return  71; }
+	else if (v<376) { return  65; }
+	else if (v<377) { return  61; }
+	else if (v<378) { return  58; }
+	else if (v<379) { return  57; }
+	else if (v<381) { return  55; }
+	else if (v<383) { return  50; }
+	else if (v<384) { return  49; }
+	else if (v<385) { return  46; }
+	else if (v<387) { return  43; }
+	else if (v<389) { return  41; }
+	else if (v<391) { return  38; }
+	else if (v<395) { return  37; }
+	else if (v<396) { return  28; }
+	else if (v<398) { return  25; }
+	else if (v<399) { return  24; }
+	else if (v<400) { return  22; }
+	else if (v<401) { return  19; }
+	else if (v<402) { return  18; }
+	else if (v<403) { return  17; }
+	else if (v<404) { return  16; }
+	else if (v<405) { return  13; }
+	else if (v<406) { return  12; }
+	else if (v<407) { return  12; }
+	else if (v<408) { return  10; }
+	else if (v<409) { return  9; }
+	else if (v<410) { return  9; }
+	else if (v<411) { return  9; }
+	else if (v<412) { return  8; }
+	else if (v<414) { return  8; }
+	else if (v<415) { return  8; }
+	else if (v<416) { return  8; }
+	else if (v<419) { return  8; }
+	else if (v<421) { return  8; }
+	else if (v<422) { return  8; }
+	else if (v<423) { return  8; }
+	else if (v<424) { return  9; }
+	else if (v<426) { return  9; }
+	else if (v<427) { return  9; }
+	else if (v<429) { return  9; }
+	else if (v<430) { return  9; }
+	else if (v<431) { return  9; }
+	else if (v<432) { return  10; }
+	else if (v<435) { return  10; }
+	else if (v<437) { return  11; }
+	else if (v<438) { return  12; }
+	else if (v<439) { return  13; }
+	else if (v<440) { return  13; }
+	else if (v<442) { return  15; }
+	else if (v<443) { return  16; }
+	else if (v<447) { return  17; }
+	else if (v<449) { return  18; }
+	else if (v<450) { return  21; }
+	else if (v<452) { return  23; }
+	else if (v<453) { return  27; }
+	else if (v<455) { return  29; }
+	else if (v<457) { return  32; }
+	else if (v<458) { return  37; }
+	else if (v<459) { return  37; }
+	else if (v<461) { return  41; }
+	else if (v<462) { return  45; }
+	else if (v<463) { return  46; }
+	else if (v<464) { return  49; }
+	else if (v<466) { return  56; }
+	else if (v<468) { return  58; }
+	else if (v<469) { return  65; }
+	else if (v<470) { return  68; }
+	else if (v<471) { return  70; }
+	else if (v<472) { return  77; }
+	else if (v<475) { return  82; }
+	else if (v<476) { return  99; }
+	else if (v<477) { return  103; }
+	else if (v<478) { return  105; }
+	else if (v<480) { return  109; }
+	else if (v<482) { return  119; }
+	else if (v<483) { return  125; }
+	else if (v<484) { return  131; }
+	else if (v<485) { return  141; }
+	else if (v<486) { return  146; }
+	else if (v<487) { return  152; }
+	else if (v<488) { return  154; }
+	else if (v<491) { return  165; }
+	else if (v<492) { return  168; }
+	else if (v<495) { return  174; }
+	else if (v<497) { return  187; }
+	else if (v<498) { return  194; }
+	else if (v<499) { return  199; }
+	else if (v<501) { return  205; }
+	else if (v<502) { return  211; }
+	else if (v<503) { return  214; }
+	else if (v<504) { return  214; }
+	else if (v<505) { return  219; }
+	else if (v<506) { return  222; }
+	else if (v<507) { return  225; }
+	else if (v<508) { return  227; }
+	else if (v<509) { return  232; }
+	else if (v<510) { return  234; }
+	else if (v<511) { return  238; }
+	else if (v<513) { return  241; }
+	 return 241;
 }
 uint8_t ease_probability_tunnel(uint16_t v) {
-  v = v / 8;
-  if (v < 3) {
-    return 0;
-  } else if (v < 6) {
-    return 4;
-  } else if (v < 7) {
-    return 1;
-  } else if (v < 8) {
-    return 1;
-  } else if (v < 9) {
-    return 0;
-  } else if (v < 41) {
-    return 0;
-  } else if (v < 47) {
-    return 0;
-  } else if (v < 51) {
-    return 0;
-  } else if (v < 55) {
-    return 1;
-  } else if (v < 59) {
-    return 3;
-  } else if (v < 64) {
-    return 3;
-  } else if (v < 68) {
-    return 4;
-  } else if (v < 71) {
-    return 4;
-  } else if (v < 73) {
-    return 5;
-  } else if (v < 75) {
-    return 5;
-  } else if (v < 76) {
-    return 5;
-  } else if (v < 79) {
-    return 5;
-  } else if (v < 83) {
-    return 5;
-  } else if (v < 86) {
-    return 5;
-  } else if (v < 89) {
-    return 5;
-  } else if (v < 91) {
-    return 5;
-  } else if (v < 92) {
-    return 5;
-  } else if (v < 93) {
-    return 5;
-  } else if (v < 95) {
-    return 5;
-  } else if (v < 98) {
-    return 5;
-  } else if (v < 101) {
-    return 5;
-  } else if (v < 104) {
-    return 5;
-  } else if (v < 107) {
-    return 5;
-  } else if (v < 109) {
-    return 5;
-  } else if (v < 111) {
-    return 5;
-  } else if (v < 112) {
-    return 5;
-  } else if (v < 113) {
-    return 5;
-  } else if (v < 115) {
-    return 5;
-  } else if (v < 118) {
-    return 5;
-  } else if (v < 123) {
-    return 4;
-  } else if (v < 125) {
-    return 4;
-  } else if (v < 129) {
-    return 4;
-  } else if (v < 131) {
-    return 4;
-  } else if (v < 133) {
-    return 4;
-  } else if (v < 135) {
-    return 4;
-  } else if (v < 137) {
-    return 4;
-  } else if (v < 138) {
-    return 4;
-  } else if (v < 142) {
-    return 4;
-  } else if (v < 145) {
-    return 4;
-  } else if (v < 148) {
-    return 4;
-  } else if (v < 150) {
-    return 4;
-  } else if (v < 154) {
-    return 4;
-  } else if (v < 156) {
-    return 4;
-  } else if (v < 162) {
-    return 4;
-  } else if (v < 166) {
-    return 4;
-  } else if (v < 170) {
-    return 5;
-  } else if (v < 173) {
-    return 6;
-  } else if (v < 176) {
-    return 7;
-  } else if (v < 178) {
-    return 8;
-  } else if (v < 179) {
-    return 9;
-  } else if (v < 180) {
-    return 9;
-  } else if (v < 182) {
-    return 10;
-  } else if (v < 190) {
-    return 12;
-  } else if (v < 195) {
-    return 17;
-  } else if (v < 198) {
-    return 20;
-  } else if (v < 203) {
-    return 22;
-  } else if (v < 206) {
-    return 25;
-  } else if (v < 207) {
-    return 26;
-  } else if (v < 208) {
-    return 27;
-  } else if (v < 209) {
-    return 28;
-  } else if (v < 211) {
-    return 29;
-  } else if (v < 213) {
-    return 32;
-  } else if (v < 217) {
-    return 35;
-  } else if (v < 220) {
-    return 39;
-  } else if (v < 221) {
-    return 45;
-  } else if (v < 223) {
-    return 47;
-  } else if (v < 224) {
-    return 49;
-  } else if (v < 225) {
-    return 51;
-  } else if (v < 227) {
-    return 52;
-  } else if (v < 229) {
-    return 55;
-  } else if (v < 231) {
-    return 60;
-  } else if (v < 232) {
-    return 66;
-  } else if (v < 233) {
-    return 69;
-  } else if (v < 235) {
-    return 71;
-  } else if (v < 236) {
-    return 74;
-  } else if (v < 237) {
-    return 78;
-  } else if (v < 238) {
-    return 81;
-  } else if (v < 239) {
-    return 86;
-  } else if (v < 240) {
-    return 91;
-  } else if (v < 241) {
-    return 95;
-  } else if (v < 243) {
-    return 98;
-  } else if (v < 244) {
-    return 110;
-  } else if (v < 245) {
-    return 113;
-  } else if (v < 246) {
-    return 119;
-  } else if (v < 247) {
-    return 126;
-  } else if (v < 248) {
-    return 129;
-  } else if (v < 249) {
-    return 136;
-  } else if (v < 250) {
-    return 143;
-  } else if (v < 252) {
-    return 147;
-  } else if (v < 254) {
-    return 151;
-  } else if (v < 255) {
-    return 158;
-  } else if (v < 257) {
-    return 163;
-  } else if (v < 258) {
-    return 171;
-  } else if (v < 259) {
-    return 173;
-  } else if (v < 260) {
-    return 178;
-  } else if (v < 261) {
-    return 183;
-  } else if (v < 263) {
-    return 185;
-  } else if (v < 265) {
-    return 191;
-  } else if (v < 266) {
-    return 197;
-  } else if (v < 267) {
-    return 198;
-  } else if (v < 269) {
-    return 198;
-  } else if (v < 272) {
-    return 200;
-  } else if (v < 274) {
-    return 202;
-  } else if (v < 276) {
-    return 203;
-  } else if (v < 278) {
-    return 204;
-  } else if (v < 280) {
-    return 205;
-  } else if (v < 282) {
-    return 206;
-  } else if (v < 284) {
-    return 206;
-  } else if (v < 285) {
-    return 206;
-  } else if (v < 286) {
-    return 206;
-  } else if (v < 287) {
-    return 206;
-  } else if (v < 288) {
-    return 206;
-  } else if (v < 290) {
-    return 205;
-  } else if (v < 292) {
-    return 203;
-  } else if (v < 294) {
-    return 202;
-  } else if (v < 296) {
-    return 200;
-  } else if (v < 298) {
-    return 197;
-  } else if (v < 300) {
-    return 196;
-  } else if (v < 301) {
-    return 188;
-  } else if (v < 302) {
-    return 185;
-  } else if (v < 303) {
-    return 183;
-  } else if (v < 304) {
-    return 175;
-  } else if (v < 305) {
-    return 168;
-  } else if (v < 306) {
-    return 154;
-  } else if (v < 307) {
-    return 146;
-  } else if (v < 308) {
-    return 136;
-  } else if (v < 309) {
-    return 131;
-  } else if (v < 310) {
-    return 113;
-  } else if (v < 311) {
-    return 112;
-  } else if (v < 312) {
-    return 109;
-  } else if (v < 313) {
-    return 105;
-  } else if (v < 314) {
-    return 101;
-  } else if (v < 315) {
-    return 99;
-  } else if (v < 316) {
-    return 96;
-  } else if (v < 317) {
-    return 92;
-  } else if (v < 318) {
-    return 87;
-  } else if (v < 319) {
-    return 85;
-  } else if (v < 320) {
-    return 81;
-  } else if (v < 321) {
-    return 78;
-  } else if (v < 323) {
-    return 76;
-  } else if (v < 325) {
-    return 72;
-  } else if (v < 327) {
-    return 69;
-  } else if (v < 328) {
-    return 66;
-  } else if (v < 330) {
-    return 65;
-  } else if (v < 331) {
-    return 63;
-  } else if (v < 332) {
-    return 63;
-  } else if (v < 334) {
-    return 63;
-  } else if (v < 335) {
-    return 62;
-  } else if (v < 337) {
-    return 61;
-  } else if (v < 339) {
-    return 61;
-  } else if (v < 341) {
-    return 60;
-  } else if (v < 343) {
-    return 60;
-  } else if (v < 344) {
-    return 60;
-  } else if (v < 347) {
-    return 60;
-  } else if (v < 348) {
-    return 60;
-  } else if (v < 349) {
-    return 60;
-  } else if (v < 350) {
-    return 60;
-  } else if (v < 352) {
-    return 60;
-  } else if (v < 354) {
-    return 60;
-  } else if (v < 356) {
-    return 60;
-  } else if (v < 357) {
-    return 61;
-  } else if (v < 358) {
-    return 61;
-  } else if (v < 360) {
-    return 61;
-  } else if (v < 362) {
-    return 62;
-  } else if (v < 364) {
-    return 62;
-  } else if (v < 368) {
-    return 62;
-  } else if (v < 371) {
-    return 62;
-  } else if (v < 374) {
-    return 62;
-  } else if (v < 380) {
-    return 62;
-  } else if (v < 381) {
-    return 62;
-  } else if (v < 383) {
-    return 62;
-  } else if (v < 385) {
-    return 62;
-  } else if (v < 388) {
-    return 62;
-  } else if (v < 392) {
-    return 61;
-  } else if (v < 394) {
-    return 61;
-  } else if (v < 397) {
-    return 60;
-  } else if (v < 400) {
-    return 59;
-  } else if (v < 402) {
-    return 59;
-  } else if (v < 403) {
-    return 57;
-  } else if (v < 404) {
-    return 57;
-  } else if (v < 405) {
-    return 56;
-  } else if (v < 406) {
-    return 56;
-  } else if (v < 407) {
-    return 55;
-  } else if (v < 408) {
-    return 55;
-  } else if (v < 409) {
-    return 54;
-  } else if (v < 410) {
-    return 53;
-  } else if (v < 412) {
-    return 52;
-  } else if (v < 413) {
-    return 50;
-  } else if (v < 415) {
-    return 49;
-  } else if (v < 417) {
-    return 48;
-  } else if (v < 418) {
-    return 47;
-  } else if (v < 419) {
-    return 47;
-  } else if (v < 421) {
-    return 45;
-  } else if (v < 423) {
-    return 43;
-  } else if (v < 428) {
-    return 42;
-  } else if (v < 429) {
-    return 38;
-  } else if (v < 430) {
-    return 37;
-  } else if (v < 432) {
-    return 36;
-  } else if (v < 434) {
-    return 34;
-  } else if (v < 435) {
-    return 34;
-  } else if (v < 436) {
-    return 33;
-  } else if (v < 437) {
-    return 32;
-  } else if (v < 438) {
-    return 32;
-  } else if (v < 440) {
-    return 30;
-  } else if (v < 441) {
-    return 29;
-  } else if (v < 442) {
-    return 28;
-  } else if (v < 443) {
-    return 27;
-  } else if (v < 445) {
-    return 27;
-  } else if (v < 447) {
-    return 25;
-  } else if (v < 448) {
-    return 24;
-  } else if (v < 449) {
-    return 24;
-  } else if (v < 450) {
-    return 23;
-  } else if (v < 451) {
-    return 23;
-  } else if (v < 453) {
-    return 22;
-  } else if (v < 455) {
-    return 21;
-  } else if (v < 456) {
-    return 20;
-  } else if (v < 458) {
-    return 20;
-  } else if (v < 459) {
-    return 20;
-  } else if (v < 462) {
-    return 20;
-  } else if (v < 463) {
-    return 19;
-  } else if (v < 464) {
-    return 19;
-  } else if (v < 465) {
-    return 19;
-  } else if (v < 467) {
-    return 18;
-  } else if (v < 470) {
-    return 18;
-  } else if (v < 472) {
-    return 18;
-  } else if (v < 474) {
-    return 17;
-  } else if (v < 476) {
-    return 16;
-  } else if (v < 478) {
-    return 16;
-  } else if (v < 480) {
-    return 15;
-  } else if (v < 481) {
-    return 15;
-  } else if (v < 482) {
-    return 15;
-  } else if (v < 485) {
-    return 15;
-  } else if (v < 487) {
-    return 15;
-  } else if (v < 490) {
-    return 15;
-  } else if (v < 494) {
-    return 15;
-  } else if (v < 497) {
-    return 15;
-  } else if (v < 500) {
-    return 15;
-  } else if (v < 503) {
-    return 15;
-  } else if (v < 505) {
-    return 15;
-  } else if (v < 511) {
-    return 15;
-  } else if (v < 512) {
-    return 13;
-  } else if (v < 513) {
-    return 12;
-  } else if (v < 514) {
-    return 12;
-  } else if (v < 516) {
-    return 12;
-  } else if (v < 519) {
-    return 11;
-  } else if (v < 521) {
-    return 10;
-  } else if (v < 524) {
-    return 10;
-  } else if (v < 525) {
-    return 8;
-  } else if (v < 527) {
-    return 8;
-  } else if (v < 529) {
-    return 7;
-  } else if (v < 531) {
-    return 6;
-  } else if (v < 533) {
-    return 4;
-  } else if (v < 535) {
-    return 3;
-  } else if (v < 536) {
-    return 1;
-  } else if (v < 538) {
-    return 1;
-  }
-  return 1;
+	v=v/8;
+	if (v<3) { return 0; }
+	else if (v<6) { return  4; }
+	else if (v<7) { return  1; }
+	else if (v<8) { return  1; }
+	else if (v<9) { return  0; }
+	else if (v<41) { return  0; }
+	else if (v<47) { return  0; }
+	else if (v<51) { return  0; }
+	else if (v<55) { return  1; }
+	else if (v<59) { return  3; }
+	else if (v<64) { return  3; }
+	else if (v<68) { return  4; }
+	else if (v<71) { return  4; }
+	else if (v<73) { return  5; }
+	else if (v<75) { return  5; }
+	else if (v<76) { return  5; }
+	else if (v<79) { return  5; }
+	else if (v<83) { return  5; }
+	else if (v<86) { return  5; }
+	else if (v<89) { return  5; }
+	else if (v<91) { return  5; }
+	else if (v<92) { return  5; }
+	else if (v<93) { return  5; }
+	else if (v<95) { return  5; }
+	else if (v<98) { return  5; }
+	else if (v<101) { return  5; }
+	else if (v<104) { return  5; }
+	else if (v<107) { return  5; }
+	else if (v<109) { return  5; }
+	else if (v<111) { return  5; }
+	else if (v<112) { return  5; }
+	else if (v<113) { return  5; }
+	else if (v<115) { return  5; }
+	else if (v<118) { return  5; }
+	else if (v<123) { return  4; }
+	else if (v<125) { return  4; }
+	else if (v<129) { return  4; }
+	else if (v<131) { return  4; }
+	else if (v<133) { return  4; }
+	else if (v<135) { return  4; }
+	else if (v<137) { return  4; }
+	else if (v<138) { return  4; }
+	else if (v<142) { return  4; }
+	else if (v<145) { return  4; }
+	else if (v<148) { return  4; }
+	else if (v<150) { return  4; }
+	else if (v<154) { return  4; }
+	else if (v<156) { return  4; }
+	else if (v<162) { return  4; }
+	else if (v<166) { return  4; }
+	else if (v<170) { return  5; }
+	else if (v<173) { return  6; }
+	else if (v<176) { return  7; }
+	else if (v<178) { return  8; }
+	else if (v<179) { return  9; }
+	else if (v<180) { return  9; }
+	else if (v<182) { return  10; }
+	else if (v<190) { return  12; }
+	else if (v<195) { return  17; }
+	else if (v<198) { return  20; }
+	else if (v<203) { return  22; }
+	else if (v<206) { return  25; }
+	else if (v<207) { return  26; }
+	else if (v<208) { return  27; }
+	else if (v<209) { return  28; }
+	else if (v<211) { return  29; }
+	else if (v<213) { return  32; }
+	else if (v<217) { return  35; }
+	else if (v<220) { return  39; }
+	else if (v<221) { return  45; }
+	else if (v<223) { return  47; }
+	else if (v<224) { return  49; }
+	else if (v<225) { return  51; }
+	else if (v<227) { return  52; }
+	else if (v<229) { return  55; }
+	else if (v<231) { return  60; }
+	else if (v<232) { return  66; }
+	else if (v<233) { return  69; }
+	else if (v<235) { return  71; }
+	else if (v<236) { return  74; }
+	else if (v<237) { return  78; }
+	else if (v<238) { return  81; }
+	else if (v<239) { return  86; }
+	else if (v<240) { return  91; }
+	else if (v<241) { return  95; }
+	else if (v<243) { return  98; }
+	else if (v<244) { return  110; }
+	else if (v<245) { return  113; }
+	else if (v<246) { return  119; }
+	else if (v<247) { return  126; }
+	else if (v<248) { return  129; }
+	else if (v<249) { return  136; }
+	else if (v<250) { return  143; }
+	else if (v<252) { return  147; }
+	else if (v<254) { return  151; }
+	else if (v<255) { return  158; }
+	else if (v<257) { return  163; }
+	else if (v<258) { return  171; }
+	else if (v<259) { return  173; }
+	else if (v<260) { return  178; }
+	else if (v<261) { return  183; }
+	else if (v<263) { return  185; }
+	else if (v<265) { return  191; }
+	else if (v<266) { return  197; }
+	else if (v<267) { return  198; }
+	else if (v<269) { return  198; }
+	else if (v<272) { return  200; }
+	else if (v<274) { return  202; }
+	else if (v<276) { return  203; }
+	else if (v<278) { return  204; }
+	else if (v<280) { return  205; }
+	else if (v<282) { return  206; }
+	else if (v<284) { return  206; }
+	else if (v<285) { return  206; }
+	else if (v<286) { return  206; }
+	else if (v<287) { return  206; }
+	else if (v<288) { return  206; }
+	else if (v<290) { return  205; }
+	else if (v<292) { return  203; }
+	else if (v<294) { return  202; }
+	else if (v<296) { return  200; }
+	else if (v<298) { return  197; }
+	else if (v<300) { return  196; }
+	else if (v<301) { return  188; }
+	else if (v<302) { return  185; }
+	else if (v<303) { return  183; }
+	else if (v<304) { return  175; }
+	else if (v<305) { return  168; }
+	else if (v<306) { return  154; }
+	else if (v<307) { return  146; }
+	else if (v<308) { return  136; }
+	else if (v<309) { return  131; }
+	else if (v<310) { return  113; }
+	else if (v<311) { return  112; }
+	else if (v<312) { return  109; }
+	else if (v<313) { return  105; }
+	else if (v<314) { return  101; }
+	else if (v<315) { return  99; }
+	else if (v<316) { return  96; }
+	else if (v<317) { return  92; }
+	else if (v<318) { return  87; }
+	else if (v<319) { return  85; }
+	else if (v<320) { return  81; }
+	else if (v<321) { return  78; }
+	else if (v<323) { return  76; }
+	else if (v<325) { return  72; }
+	else if (v<327) { return  69; }
+	else if (v<328) { return  66; }
+	else if (v<330) { return  65; }
+	else if (v<331) { return  63; }
+	else if (v<332) { return  63; }
+	else if (v<334) { return  63; }
+	else if (v<335) { return  62; }
+	else if (v<337) { return  61; }
+	else if (v<339) { return  61; }
+	else if (v<341) { return  60; }
+	else if (v<343) { return  60; }
+	else if (v<344) { return  60; }
+	else if (v<347) { return  60; }
+	else if (v<348) { return  60; }
+	else if (v<349) { return  60; }
+	else if (v<350) { return  60; }
+	else if (v<352) { return  60; }
+	else if (v<354) { return  60; }
+	else if (v<356) { return  60; }
+	else if (v<357) { return  61; }
+	else if (v<358) { return  61; }
+	else if (v<360) { return  61; }
+	else if (v<362) { return  62; }
+	else if (v<364) { return  62; }
+	else if (v<368) { return  62; }
+	else if (v<371) { return  62; }
+	else if (v<374) { return  62; }
+	else if (v<380) { return  62; }
+	else if (v<381) { return  62; }
+	else if (v<383) { return  62; }
+	else if (v<385) { return  62; }
+	else if (v<388) { return  62; }
+	else if (v<392) { return  61; }
+	else if (v<394) { return  61; }
+	else if (v<397) { return  60; }
+	else if (v<400) { return  59; }
+	else if (v<402) { return  59; }
+	else if (v<403) { return  57; }
+	else if (v<404) { return  57; }
+	else if (v<405) { return  56; }
+	else if (v<406) { return  56; }
+	else if (v<407) { return  55; }
+	else if (v<408) { return  55; }
+	else if (v<409) { return  54; }
+	else if (v<410) { return  53; }
+	else if (v<412) { return  52; }
+	else if (v<413) { return  50; }
+	else if (v<415) { return  49; }
+	else if (v<417) { return  48; }
+	else if (v<418) { return  47; }
+	else if (v<419) { return  47; }
+	else if (v<421) { return  45; }
+	else if (v<423) { return  43; }
+	else if (v<428) { return  42; }
+	else if (v<429) { return  38; }
+	else if (v<430) { return  37; }
+	else if (v<432) { return  36; }
+	else if (v<434) { return  34; }
+	else if (v<435) { return  34; }
+	else if (v<436) { return  33; }
+	else if (v<437) { return  32; }
+	else if (v<438) { return  32; }
+	else if (v<440) { return  30; }
+	else if (v<441) { return  29; }
+	else if (v<442) { return  28; }
+	else if (v<443) { return  27; }
+	else if (v<445) { return  27; }
+	else if (v<447) { return  25; }
+	else if (v<448) { return  24; }
+	else if (v<449) { return  24; }
+	else if (v<450) { return  23; }
+	else if (v<451) { return  23; }
+	else if (v<453) { return  22; }
+	else if (v<455) { return  21; }
+	else if (v<456) { return  20; }
+	else if (v<458) { return  20; }
+	else if (v<459) { return  20; }
+	else if (v<462) { return  20; }
+	else if (v<463) { return  19; }
+	else if (v<464) { return  19; }
+	else if (v<465) { return  19; }
+	else if (v<467) { return  18; }
+	else if (v<470) { return  18; }
+	else if (v<472) { return  18; }
+	else if (v<474) { return  17; }
+	else if (v<476) { return  16; }
+	else if (v<478) { return  16; }
+	else if (v<480) { return  15; }
+	else if (v<481) { return  15; }
+	else if (v<482) { return  15; }
+	else if (v<485) { return  15; }
+	else if (v<487) { return  15; }
+	else if (v<490) { return  15; }
+	else if (v<494) { return  15; }
+	else if (v<497) { return  15; }
+	else if (v<500) { return  15; }
+	else if (v<503) { return  15; }
+	else if (v<505) { return  15; }
+	else if (v<511) { return  15; }
+	else if (v<512) { return  13; }
+	else if (v<513) { return  12; }
+	else if (v<514) { return  12; }
+	else if (v<516) { return  12; }
+	else if (v<519) { return  11; }
+	else if (v<521) { return  10; }
+	else if (v<524) { return  10; }
+	else if (v<525) { return  8; }
+	else if (v<527) { return  8; }
+	else if (v<529) { return  7; }
+	else if (v<531) { return  6; }
+	else if (v<533) { return  4; }
+	else if (v<535) { return  3; }
+	else if (v<536) { return  1; }
+	else if (v<538) { return  1; }
+	 return 1;
 }
