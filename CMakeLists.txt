@@ -21,6 +21,7 @@ pico_sdk_init()
 
 add_executable(${PROJECT_NAME} 
 	${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
+	${CMAKE_CURRENT_LIST_DIR}/src/Settings.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/PikoAudioBank.cpp
 	${CMAKE_CURRENT_LIST_DIR}/src/PikoSampleManager.cpp
 	${CMAKE_CURRENT_LIST_DIR}/doth/WS2812.cpp 
