@@ -1582,7 +1582,7 @@ int main(void) {
         settings_load(loaded);
         g_settings = loaded;
         param_set_volume(loaded.volume, distortion, volume_reduce);
-        // filter_fc = loaded.filter;
+        filter_fc = loaded.filter;
         sample_change = loaded.sample;
         if (piko_audio_sample_count() > 0) {
           sample_change %= piko_audio_sample_count();
@@ -1648,8 +1648,7 @@ int main(void) {
             // reset fx
             param_set_break(0, filter_fc, distortion, probability_jump,
                             probability_retrig, probability_gate,
-                            probability_direction, probability_tunnel,
-                            save_data);
+                            probability_direction, probability_tunnel);
           }
         }
         if (input_button[0].ChangedHigh(true) ||
@@ -1745,6 +1744,7 @@ int main(void) {
                 case 1:
                   filter_fc = input_knob[i].Value() * (LPF_MAX + 10) /
                               input_knob[i].ValueMax();
+                  g_settings.filter = filter_fc;
                   break;
                 case 2:
                   // gate
