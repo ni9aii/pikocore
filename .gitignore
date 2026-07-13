@@ -14,6 +14,16 @@ compile_commands.json
 # Web dependencies and local caches. Keep web/dist trackable for the static site.
 web/node_modules/
 web/.vite/
+# Duplicate of the released UF2 copied here by `make build`; the canonical
+# artifact is build/pikocore.uf2 (see above).
+web/public/pikocore.uf2
+
+# audio2h generated output (converted WAVs + manifest). Sources in
+# audio2h/samples/ and the generated header doth/audio2h.h are kept trackable.
+audio2h/converted/
+audio2h/converted10/
+audio2h/converted24/
+audio2h/files.json
 
 # Compiled Object files
 *.slo
