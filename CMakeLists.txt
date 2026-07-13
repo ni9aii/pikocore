@@ -1,5 +1,19 @@
 cmake_minimum_required(VERSION 3.18)
 
+# Total flash size in bytes. Override with -DPIKO_FLASH_SIZE_BYTES=16777216 for the 16 MiB board.
+set(PIKO_FLASH_SIZE_BYTES 2097152u CACHE STRING "Total flash size in bytes (default 2 MiB for stock Pico; set 16777216 for 16 MiB board)")
+
+# Select the board BEFORE project()/pico_sdk_init() so the linker FLASH region
+# matches the physical flash. piko16mb is a custom board header (16 MiB); pico is
+# the stock 2 MiB board.
+if(PIKO_FLASH_SIZE_BYTES EQUAL 16777216)
+  set(PICO_BOARD "piko16mb" CACHE STRING "Board type" FORCE)
+  set(PICO_BOARD_HEADER_DIRS "${CMAKE_CURRENT_LIST_DIR}/cmake/boards" CACHE STRING "Board header dirs" FORCE)
+  message(STATUS "pikocore: building for 16 MiB board (piko16mb)")
+else()
+  set(PICO_BOARD "pico" CACHE STRING "Board type" FORCE)
+endif()
+
 if(NOT PICO_SDK_PATH)
 	if(DEFINED ENV{PICO_SDK_PATH})
 		set(PICO_SDK_PATH "$ENV{PICO_SDK_PATH}")
@@ -60,6 +74,7 @@ include(target_compile_definitions.cmake)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
 	PIKO_FIRMWARE_RESERVE=524288u
+	PICO_FLASH_SIZE_BYTES=${PIKO_FLASH_SIZE_BYTES}
 	PICO_STDIO_USB_CONNECTION_WITHOUT_DTR=1
 	USBD_MANUFACTURER="infinitedigits"
 	USBD_PRODUCT="pikocore"
