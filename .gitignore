@@ -18,12 +18,15 @@ web/.vite/
 # artifact is build/pikocore.uf2 (see above).
 web/public/pikocore.uf2
 
-# audio2h generated output (converted WAVs + manifest). Sources in
-# audio2h/samples/ and the generated header doth/audio2h.h are kept trackable.
+# audio2h generated output and sample assets (not source). The converted
+# WAVs + manifest are produced by audio2h/main.go; samples/ holds the raw
+# input WAVs; doth/audio2h.h is its generated header (unused by the build).
+audio2h/samples/
 audio2h/converted/
 audio2h/converted10/
 audio2h/converted24/
 audio2h/files.json
+doth/audio2h.h
 
 # Compiled Object files
 *.slo
