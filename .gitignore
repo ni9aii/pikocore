@@ -19,14 +19,21 @@ web/.vite/
 web/public/pikocore.uf2
 
 # audio2h generated output and sample assets (not source). The converted
-# WAVs + manifest are produced by audio2h/main.go; samples/ holds the raw
-# input WAVs; doth/audio2h.h is its generated header (unused by the build).
+# WAVs + manifest are produced by audio2h/main.go; samples/ and demo/ hold the
+# raw input WAVs; doth/audio2h.h is its generated header (unused by the build).
 audio2h/samples/
+audio2h/demo/
 audio2h/converted/
 audio2h/converted10/
 audio2h/converted24/
 audio2h/files.json
 doth/audio2h.h
+
+# Prebuilt/release UF2 variants copied into the web dir. The canonical built
+# artifact is build/pikocore.uf2; these duplicates drift out of date.
+web/public/pikocore-2mb.uf2
+web/public/pikocore-4mb.uf2
+web/public/pikocore-16mb.uf2
 
 # Compiled Object files
 *.slo
