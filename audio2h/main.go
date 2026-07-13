@@ -249,10 +249,11 @@ func getFiles(folderName string) (files []File, err error) {
 	for _, fname := range fnames {
 		files[i].Pathname = fname
 		files[i].Converted = path.Join(flagFolderOut, filepath.Base(fname)+".wav")
-		files[i].Beats, files[i].BPM, err = sox.GetBPM(fname)
-		if err != nil {
-			log.Error(err)
-		}
+		// one-shot samples: sox.GetBPM's filename regex is unreliable here
+		// (matches any letter in "bpm" as if it were the literal word), so
+		// treat every sample as a single hit instead of guessing a tempo.
+		files[i].Beats = 1
+		files[i].BPM = flagBPM
 		files[i].Seconds, err = sox.Length(fname)
 		if err != nil {
 			log.Error(err)
@@ -275,8 +276,11 @@ func convertFiles(files []File) (err error) {
 		if lpf > 19000 {
 			lpf = 19000
 		}
-		log.Tracef("%s", strings.Join([]string{"sox", f.Pathname, "-r", fmt.Sprint(int(flagSR)), "-c", "1", "-b", "8", f.Converted, "speed", fmt.Sprintf("%2.6f", flagBPM/f.BPM), "lowpass", fmt.Sprint(lpf), "norm", "gain", "-6"}, " "))
-		cmd := exec.Command("sox", f.Pathname, "-r", fmt.Sprint(int(flagSR)), "-c", "1", "-b", "8", f.Converted, "speed", fmt.Sprintf("%2.6f", flagBPM/f.BPM), "highpass", "5", "lowpass", fmt.Sprint(lpf), "gain", "-6", "norm", "-3", "dither")
+		// one-shot samples: skip tempo-matching speed adjustment, since the
+		// filename-based BPM guess (sox.GetBPM) is unreliable for non-loop
+		// content and can produce a near-zero/garbage BPM (e.g. speed=+Inf).
+		log.Tracef("%s", strings.Join([]string{"sox", f.Pathname, "-r", fmt.Sprint(int(flagSR)), "-c", "1", "-b", "8", f.Converted, "lowpass", fmt.Sprint(lpf), "norm", "gain", "-6"}, " "))
+		cmd := exec.Command("sox", f.Pathname, "-r", fmt.Sprint(int(flagSR)), "-c", "1", "-b", "8", f.Converted, "highpass", "5", "lowpass", fmt.Sprint(lpf), "gain", "-6", "norm", "-3", "dither")
 		stdoutStderr, err := cmd.CombinedOutput()
 		if err != nil {
 			log.Errorf("cmd failed: \n%s", stdoutStderr)
