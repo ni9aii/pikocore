@@ -67,3 +67,6 @@ web/public/pikocore-16mb.uf2
 
 # macOS
 .DS_Store
+
+# Host unit-test build output (ctest/cmake build dir)
+tests/build/

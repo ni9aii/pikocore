@@ -6,6 +6,7 @@ PICO_SDK_PATH ?= $(firstword $(foreach d,$(PICO_SDK_CANDIDATES),$(if $(wildcard 
 export PICO_SDK_PATH
 
 JOBS ?= $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)
+PIKO_FLASH_SIZE_BYTES ?= 2097152
 WEB_PUBLIC_DIR := web/public
 WEB_UF2 := $(WEB_PUBLIC_DIR)/pikocore.uf2
 
@@ -41,7 +42,7 @@ filter.h: doth/filter.h
 quick: target_compile_definitions.cmake doth/easing.h doth/filter.h
 	@test -n "$(PICO_SDK_PATH)" || (echo "PICO_SDK_PATH not found. Set PICO_SDK_PATH or run 'make pico-sdk'."; exit 1)
 	mkdir -p build
-	cd build && cmake -DPICO_SDK_PATH="$(PICO_SDK_PATH)" ..
+	cd build && cmake -DPICO_SDK_PATH="$(PICO_SDK_PATH)" -DPIKO_FLASH_SIZE_BYTES=$(PIKO_FLASH_SIZE_BYTES) ..
 	cd build && make -j$(JOBS)
 	echo "BUILD SUCCESS"
 
