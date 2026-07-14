@@ -13,7 +13,14 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
-
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - board: pico
+            flash_size: 2097152
+          - board: piko16mb
+            flash_size: 16777216
     steps:
       - name: Checkout project
         uses: actions/checkout@v6.0.3
@@ -39,5 +46,25 @@ jobs:
       - name: Set PICO_SDK_PATH
         run: echo "PICO_SDK_PATH=$GITHUB_WORKSPACE/pico-sdk" >> $GITHUB_ENV
 
-      - name: Build uf2
-        run: make build
+      - name: Build uf2 (${{ matrix.board }}, ${{ matrix.flash_size }} bytes)
+        run: make build PIKO_FLASH_SIZE_BYTES=${{ matrix.flash_size }}
+
+  host-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v6.0.3
+
+      - name: Install host build tools
+        run: |
+          sudo apt update
+          sudo apt install -y cmake g++
+
+      - name: Configure host tests
+        run: cmake -S tests -B tests/build
+
+      - name: Build host tests
+        run: cmake --build tests/build
+
+      - name: Run host tests
+        run: ./tests/build/test_bank
