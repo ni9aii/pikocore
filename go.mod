@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/schollz/logger v1.2.0
-	github.com/schollz/sox v0.0.0-20230527114929-897654f100ae
+	github.com/schollz/sox v0.0.0-20231003145150-6ceb4181fcba
 	github.com/stretchr/testify v1.8.2
 	github.com/youpy/go-wav v0.3.2
 )
